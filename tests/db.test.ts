@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { capture, locate } from '../src/db/anchors'
-import { migrate, type Sql } from '../src/db/schema'
+import { migrate, migrations, type Sql } from '../src/db/schema'
 import { seed } from '../src/db/seed'
 import { Repository } from '../src/db/repository'
 import { catalog } from '../src/catalog'
@@ -82,11 +82,11 @@ describe('SQLite de estudo', () => {
     await migrate(db)
     await seed(db,fixture())
     await repo.addAnnotation('l','b',0,2,'green','preservar')
-    await expect(migrate(db,['','CREATE TABLE partial (id TEXT); INSERT INTO missing VALUES (1);'])).rejects.toThrow()
+    await expect(migrate(db,[...migrations,'CREATE TABLE partial (id TEXT); INSERT INTO missing VALUES (1);'])).rejects.toThrow()
     expect(await db.rows("SELECT name FROM sqlite_master WHERE name='partial'")).toEqual([])
-    expect(await db.rows('SELECT version FROM schema_migrations')).toEqual([{version:1}])
+    expect(await db.rows('SELECT version FROM schema_migrations')).toEqual(migrations.map((_,i) => ({version:i+1})))
     expect((await repo.annotations('l'))[0]?.note).toBe('preservar')
-    await migrate(db,['','CREATE TABLE incremental (id TEXT)'])
+    await migrate(db,[...migrations,'CREATE TABLE incremental (id TEXT)'])
     await expect(migrate(db)).rejects.toThrow('incompatível')
     expect((await repo.annotations('l'))[0]?.note).toBe('preservar')
   })
@@ -162,4 +162,53 @@ it('recusa a substituição do texto de uma versão já anotada', async () => {
   await expect(seed(db,edited)).rejects.toThrow()
   expect(await repo.annotations('l')).toMatchObject([{quote:'🌱',start:3,end:5}])
   expect(await db.rows('SELECT version FROM catalog_metadata')).toEqual([{version:1}])
+})
+
+
+it('atualiza a base da 0.1.0, mantém a anotação e separa notas gerais por módulo', async () => {
+  const {db,repo} = connect()
+  await migrate(db,migrations.slice(0,1))
+  await seed(db,catalog)
+  const [first,second]=catalog.modules
+  const lesson=first.lessons[0], block=lesson.blocks[0]
+  await repo.addAnnotation(lesson.id,block.id,0,4,'blue','Versão anterior')
+  await migrate(db)
+  await repo.saveModuleNote(first.id,'Minha síntese')
+  expect(await repo.moduleNote(first.id)).toBe('Minha síntese')
+  expect(await repo.moduleNote(second.id)).toBe('')
+  expect(await repo.annotations(lesson.id)).toMatchObject([{note:'Versão anterior'}])
+})
+it('registra o feedback original e usa apenas as vinte tentativas recentes no diagnóstico',async () => {
+  const {db,repo}=connect()
+  await migrate(db)
+  await seed(db,catalog)
+  const q=catalog.questions[0]
+  await expect(repo.answer(q,q.options.length)).rejects.toThrow()
+  await repo.answer(q,(q.answer+1)%q.options.length)
+  for(let i=0;i<20;i++) await repo.answer(q,q.answer)
+  const skill=catalog.competencies.find(c=>c.id===q.competencyId)!
+  expect((await repo.diagnosis()).find(d=>d.title===skill.title)).toMatchObject({hits:20,total:20})
+  expect(await repo.latestAnswers()).toEqual({[q.id]:q.answer})
+  const [attempt]=await db.rows<{snapshot:string}>('SELECT snapshot FROM attempts LIMIT 1')
+  expect(JSON.parse(attempt.snapshot)).toEqual(q)
+})
+
+it('reimporta pacote privado sem duplicar módulo ou perder a nota e recusa colisão divergente',async () => {
+  const {db,repo}=connect()
+  await migrate(db)
+  await seed(db,catalog)
+  const source={id:'pr-f',title:'Fonte sintética',origin:'private-import' as const}
+  const competency={id:'pr-c',title:'Eixo sintético'}
+  const module={id:'pr-m',order:1,version:1,title:'Exemplo privado',lessons:[{id:'pr-l',title:'Aula',
+    competencyIds:[competency.id],sourceIds:[source.id],blocks:[{id:'pr-b',kind:'concept' as const,text:'Texto sintético'}]}]}
+  const question={...catalog.questions[0],id:'pr-q',afterBlockId:'pr-b',competencyId:'pr-c',lessonId:'pr-l',sourceIds:['pr-f']}
+  const pack={sources:[source],competencies:[competency],modules:[module],questions:[question],version:1}
+  await repo.importPrivate(pack)
+  await repo.saveModuleNote('pr-m','Nota privada sintética')
+  await repo.importPrivate(pack)
+  expect(await repo.privateModules()).toEqual([pack])
+  module.title='Mudança divergente'
+  await expect(repo.importPrivate(pack)).rejects.toThrow()
+  expect(await repo.moduleNote('pr-m')).toBe('Nota privada sintética')
+  expect(await db.rows('PRAGMA foreign_key_check')).toEqual([])
 })

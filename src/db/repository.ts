@@ -1,3 +1,6 @@
+import { catalogSchema, type Catalog } from '../catalog'
+import { privateCatalogSchema } from '../privateCatalog'
+import { writeCatalogRows } from './seed'
 import { z } from 'zod'
 import { capture, locate, type SavedAnchor } from './anchors'
 import { transaction, type Sql } from './schema'
@@ -46,12 +49,81 @@ export class Repository {
     return this.queue(async () => {
       const [row] = await this.db.rows<{value_json:string}>("SELECT value_json FROM settings WHERE key='preferences'")
       return row ? preferencesSchema.parse(JSON.parse(row.value_json)) :
-        {examDate:'',minutes:30,days:[1,2,3,4,5],theme:'system' as const}
+        {examDate:'',minutes:30,days:[1,2,3,4,5],theme:'dark' as const}
     })
   }
   savePreferences(value: Preferences) {
     return this.queue(() => this.db.run(`INSERT INTO settings VALUES ('preferences',?)
       ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json`,[JSON.stringify(preferencesSchema.parse(value))]))
+  }
+  finishModule(moduleId:string) {
+    return this.queue(() => transaction(this.db,async () => {
+      const rows=await this.db.rows<{lesson:string;block:string}>(`SELECT l.id AS lesson,
+        (SELECT stable_key FROM content_blocks b WHERE b.lesson_id=l.id AND b.version=l.content_version ORDER BY sort_order DESC LIMIT 1) AS block
+        FROM lessons l WHERE l.module_id=? ORDER BY l.sort_order`,[moduleId])
+      for (const row of rows) await this.db.run(`INSERT INTO lesson_progress VALUES (?,?,'done',?)
+        ON CONFLICT(lesson_id) DO UPDATE SET status='done',last_block_key=excluded.last_block_key,updated_at=excluded.updated_at`,
+        [row.lesson,row.block,this.now().toISOString()])
+    }))
+  }
+  moduleNote(moduleId:string) {
+    return this.queue(async () => {
+      const [row] = await this.db.rows<{body:string}>('SELECT body FROM module_notes WHERE module_id=?',[moduleId])
+      return row?.body ?? ''
+    })
+  }
+  saveModuleNote(moduleId:string,body:string) {
+    return this.queue(() => this.db.run(`INSERT INTO module_notes VALUES (?,?,?) ON CONFLICT(module_id)
+      DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at`, [moduleId,z.string().max(32000).parse(body),this.now().toISOString()]))
+  }
+  privateModules() {
+    return this.queue(async () => (await this.db.rows<{payload:string}>('SELECT payload FROM private_modules ORDER BY module_id'))
+      .map(row => privateCatalogSchema.parse(JSON.parse(row.payload))))
+  }
+  importPrivate(input:Catalog) {
+    return this.queue(async () => {
+      const data = privateCatalogSchema.parse(input)
+      await transaction(this.db, async () => {
+        for (const module of data.modules) {
+          const lessonIds = new Set(module.lessons.map(l => l.id))
+          const questions = data.questions.filter(q => lessonIds.has(q.lessonId))
+          const usedSources = new Set([...module.lessons,...questions].flatMap(item => item.sourceIds))
+          const usedSkills = new Set(module.lessons.flatMap(l => l.competencyIds))
+          const part = { ...data, modules:[module], questions,
+            sources:data.sources.filter(s => usedSources.has(s.id)), competencies:data.competencies.filter(c => usedSkills.has(c.id)) }
+          const payload = JSON.stringify(part)
+          const [old] = await this.db.rows<{payload:string}>('SELECT payload FROM private_modules WHERE module_id=?',[module.id])
+          if (old) {
+            if (old.payload !== payload) throw new Error('Este módulo já foi importado com outro conteúdo.')
+            continue
+          }
+          await writeCatalogRows(this.db,part)
+          await this.db.run('INSERT INTO private_modules VALUES (?,?)',[module.id,payload])
+        }
+      })
+    })
+  }
+  answer(question:Catalog['questions'][number], selected:number) {
+    return this.queue(async () => {
+      const [row] = await this.db.rows<{payload_json:string}>('SELECT payload_json FROM questions WHERE id=?',[question.id])
+      if (!row) throw new Error('Questão indisponível.')
+      const q = catalogSchema.shape.questions.element.parse(JSON.parse(row.payload_json))
+      z.number().int().min(0).max(q.options.length-1).parse(selected)
+      await this.db.run('INSERT INTO attempts VALUES (?,?,?,?,?,?,?,?)',[this.uuid(),q.id,q.competencyId,q.version,
+        JSON.stringify(q),selected,Number(selected === q.answer),this.now().toISOString()])
+    })
+  }
+  latestAnswers() {
+    return this.queue(async () => Object.fromEntries((await this.db.rows<{id:string;selected:number}>(`SELECT a.question_id AS id,a.selected
+      FROM attempts a JOIN questions q ON q.id=a.question_id AND q.version=a.question_version
+      WHERE a.rowid=(SELECT max(b.rowid) FROM attempts b WHERE b.question_id=a.question_id AND b.question_version=q.version)`))
+      .map(row => [row.id,row.selected])) as Record<string,number>)
+  }
+  diagnosis() {
+    return this.queue(() => this.db.rows<{title:string;total:number;hits:number}>(`SELECT c.title,count(a.id) AS total,coalesce(sum(a.correct),0) AS hits
+      FROM competencies c LEFT JOIN attempts a ON a.competency_id=c.id AND a.rowid IN
+      (SELECT rowid FROM attempts WHERE competency_id=c.id ORDER BY created_at DESC,rowid DESC LIMIT 20)
+      GROUP BY c.id ORDER BY c.rowid`))
   }
   progress() {
     return this.queue(() => this.db.rows<Progress>(`SELECT lesson_id AS lessonId,last_block_key AS blockId,status,

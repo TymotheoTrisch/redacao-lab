@@ -16,7 +16,7 @@ const lesson = z.object({
 
 const question = z.object({
   id, version, competencyId: id, lessonId: id, type: z.literal('choice'),
-  prompt: text, options: z.array(text).min(2).max(8), answer: z.number().int().nonnegative(),
+  afterBlockId: id.optional(), prompt: text, options: z.array(text).min(2).max(8), answer: z.number().int().nonnegative(),
   explanation: text, sourceIds: ids,
 }).strict().superRefine((item, ctx) => {
   if (item.answer >= item.options.length || new Set(item.options).size !== item.options.length) {
@@ -26,7 +26,7 @@ const question = z.object({
 
 export const catalogSchema = z.object({
   version,
-  sources: z.array(z.object({ id, title: text, origin: z.literal('original') }).strict()).nonempty(),
+  sources: z.array(z.object({ id, title: text, origin: z.enum(['original','private-import']) }).strict()).nonempty(),
   competencies: z.array(z.object({ id, title: text }).strict()).nonempty(),
   modules: z.array(z.object({
     id, title: text, order: version, version, lessons: z.array(lesson).nonempty(),

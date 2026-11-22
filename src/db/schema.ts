@@ -36,7 +36,15 @@ CREATE INDEX review_due ON review_items(due_date);
 CREATE TABLE review_events (id TEXT PRIMARY KEY NOT NULL, review_item_id TEXT NOT NULL REFERENCES review_items(id), result TEXT NOT NULL, reviewed_at TEXT NOT NULL);
 `
 
-export async function migrate(db: Sql, scripts: readonly string[] = [initial]) {
+export const migrations = [initial, `
+CREATE TABLE module_notes (module_id TEXT PRIMARY KEY NOT NULL REFERENCES modules(id), body TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE private_modules (module_id TEXT PRIMARY KEY NOT NULL REFERENCES modules(id), payload TEXT NOT NULL);
+CREATE TABLE attempts (id TEXT PRIMARY KEY NOT NULL, question_id TEXT NOT NULL REFERENCES questions(id), competency_id TEXT NOT NULL REFERENCES competencies(id), question_version INTEGER NOT NULL, snapshot TEXT NOT NULL, selected INTEGER NOT NULL, correct INTEGER NOT NULL CHECK(correct IN (0,1)), created_at TEXT NOT NULL);
+CREATE INDEX attempts_competency ON attempts(competency_id,created_at);
+CREATE INDEX attempts_question ON attempts(question_id,created_at);
+`]
+
+export async function migrate(db: Sql, scripts: readonly string[] = migrations) {
   await db.execute('PRAGMA foreign_keys=ON')
   await transaction(db, async () => {
     await db.execute('CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL)')
