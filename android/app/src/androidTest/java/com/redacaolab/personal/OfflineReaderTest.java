@@ -59,9 +59,27 @@ public class OfflineReaderTest {
             eval(app,"(()=>{const t=document.querySelector('textarea');t.value='Nota sintética de integração';" +
                 "t.dispatchEvent(new Event('input',{bubbles:true}))})()");
             click(app,"Salvar anotação");
-            await(app,"document.querySelector('mark') && document.body.textContent.includes('Nota sintética de integração')");
+            await(app,"[...document.querySelectorAll('mark')].some(m=>m.getAttribute('aria-label').includes('Nota sintética de integração'))");
+            eval(app,"document.querySelector('button.notes-fab').click()");
+            await(app,"document.querySelector('dialog[open] textarea')");
+            eval(app,"(()=>{const t=document.querySelector('dialog textarea');t.value='Síntese geral sintética';t.dispatchEvent(new Event('input',{bubbles:true}))})()");
+            click(app,"Salvar e voltar");
+            await(app,"!document.querySelector('dialog[open]')");
+            eval(app,"document.querySelector('.question input').click()");
+            click(app,"Conferir resposta");
+            await(app,"document.querySelector('.feedback')");
             click(app,"Marcar para reforço");
             await(app,"document.body.textContent.includes('Aula marcada para reforço.')");
+        }
+    }
+
+    @Test public void retainsPreviousVersion() throws Exception {
+        assumeTrue("yes".equals(InstrumentationRegistry.getArguments().getString("scratch")));
+        try (ActivityScenario<MainActivity> app = ActivityScenario.launch(MainActivity.class)) {
+            await(app, "document.querySelector('button.resume:not(:disabled)')");
+            eval(app, "document.querySelector('button.resume').click()");
+            await(app, "[...document.querySelectorAll('mark')].some(m=>m.getAttribute('aria-label').includes('Nota sintética de integração'))");
+            await(app, "document.body.textContent.includes('Marcada para reforço')");
         }
     }
 
@@ -70,8 +88,11 @@ public class OfflineReaderTest {
         try (ActivityScenario<MainActivity> app = ActivityScenario.launch(MainActivity.class)) {
             await(app, "document.querySelector('button.resume:not(:disabled)')");
             eval(app, "document.querySelector('button.resume').click()");
-            await(app, "document.querySelector('mark') && document.body.textContent.includes('Nota sintética de integração')");
+            await(app, "[...document.querySelectorAll('mark')].some(m=>m.getAttribute('aria-label').includes('Nota sintética de integração'))");
             await(app, "document.body.textContent.includes('Marcada para reforço')");
+            await(app,"document.querySelector('.feedback')");
+            eval(app,"document.querySelector('button.notes-fab').click()");
+            await(app,"document.querySelector('dialog[open] textarea').value==='Síntese geral sintética'");
         }
     }
 }

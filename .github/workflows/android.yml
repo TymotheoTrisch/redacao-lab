@@ -2,7 +2,7 @@ name: Android offline
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, 'feat/**']
     paths: ['src/**', 'android/**', 'public/**', 'tests/**', 'package*.json', '*.config.*', '.github/workflows/android.yml']
 permissions:
   contents: read
@@ -25,6 +25,15 @@ jobs:
       - run: ./android/gradlew -p android :app:assembleDebug :app:assembleDebugAndroidTest
       - run: python3 tests/android-manifest.py android/app/build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml
       - run: python3 tests/android-package.py android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Obter código da 0.1.0 para teste de atualização
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4d279589ec6934a8f93fe645185634124d890074
+          path: .baseline
+          persist-credentials: false
+      - name: Compilar versão anterior com o mesmo certificado do emulador
+        working-directory: .baseline
+        run: npm ci && npm run build && npm run android:sync && ./android/gradlew -p android :app:assembleDebug :app:assembleDebugAndroidTest
       - name: Habilitar KVM no runner
         run: sudo chmod 666 /dev/kvm
       - name: Validar leitura e persistência em modo avião
