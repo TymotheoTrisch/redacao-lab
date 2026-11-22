@@ -37,3 +37,23 @@ Regras adicionais:
 - Quando um teste automatizado não for viável, documentar a justificativa e estabelecer um procedimento de validação reproduzível.
 - Toda alteração deve preservar o comportamento anteriormente validado, salvo mudança intencional de requisito.
 - Não declarar testes aprovados quando não foram executados.
+
+
+Os arquivos JSON originais do Professor Redação foram extraídos para `reference-private/`.
+
+Leia `CONTENT.md` e analise a estrutura desses arquivos.
+
+Implemente um importador local e opcional para aproveitar os dados como referência pedagógica, preservando os arquivos originais e seus identificadores de origem.
+
+Não envie `reference-private/` ao GitHub, não publique esses conteúdos e não os inclua automaticamente no APK distribuível.
+
+Mantenha a arquitetura de conteúdo independente, permitindo utilizar os módulos próprios do Redação Lab e evoluir futuramente sem depender dos arquivos originais.
+
+Crie testes automatizados para validar a importação, a integridade dos dados e a compatibilidade com o modelo de persistência.
+
+## Regras do leitor no Android
+- Tema escuro por padrão, contraste legível e animações breves que respeitam a preferência por movimento reduzido.
+- Cada módulo oferece leitura vertical contínua. Perguntas, respostas e explicações ficam intercaladas com o texto associado.
+- A seleção de um trecho apresenta cores para grifar imediatamente e uma ação de comentário junto à seleção.
+- O botão de notas gerais contém apenas um ícone, com nome acessível, no canto inferior direito. Abre um painel sobre o módulo e conserva a posição de leitura.
+- As referências pedagógicas privadas entram por importação local opcional. A distribuição inclui o catálogo autoral.
