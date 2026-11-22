@@ -48,3 +48,24 @@ Regras adicionais:
 - Quando um teste automatizado não for viável, documentar a justificativa e estabelecer um procedimento de validação reproduzível.
 - Toda alteração deve preservar o comportamento anteriormente validado, salvo mudança intencional de requisito.
 - Não declarar testes aprovados quando não foram executados.
+## Evidências da primeira fatia Android · 22/11/2026
+
+| Etapa | Evidência local |
+|---|---|
+| B01 | Build debug 0.1.0 produzido no Windows. `apksigner verify` confirmou v1/v2. Identidade, plataforma, certificado, hash e instalação estão no README. |
+| B02 | Migration 001, seed transacional, FKs e dados pessoais em SQLite. Testes em banco real de arquivo verificam reabertura, rollback e proteção contra versão incompatível. |
+| B03 | Cinco módulos, dez aulas, 25 exercícios com explicação. Busca por conteúdo, conclusão e retomada de bloco. Testes de catálogo e interface executados. |
+| B04 | Seleção UTF-16, três cores, edição e exclusão confirmada, reancoragem por contexto e citação órfã visível. Reforço por aula com revisão e reagendamento. |
+
+Instalação limpa de dependências, ESLint, TypeScript strict, 25 testes Vitest, Vite, Capacitor sync, Gradle debug e compilação dos testes instrumentados passaram no Windows. Conferidos os assets embarcados, manifesto mesclado e assinatura. A auditoria npm reportou zero alertas nas dependências de produção e quatro moderados restritos à cadeia de ferramentas de teste.
+
+### Correções verificadas
+
+- O seed permitia alterar blocos com a mesma versão, comprometendo a referência de anotações. Um teste SQLite reproduziu a aceitação indevida. A comparação dos blocos antes da escrita rejeita o pacote inconsistente e preserva a versão e os dados anteriores. Reexecutados o teste específico e a suíte.
+- O AndroidX adicionava um receptor de perfil exportado durante a mesclagem do manifesto. O teste do manifesto efetivo falhou com dois componentes exportados. A remoção dirigida do receptor passou na mesma verificação e deixou apenas o launcher exportado.
+- O padrão debug do Capacitor incluía argumentos de chamadas SQLite nos logs da ponte. Um teste leu a configuração do APK e falhou com esse padrão. O ajuste explícito de logging passou após gerar novamente o APK. O teste permanente também rejeita URL de servidor remoto.
+- A CI tentou compilar a instrumentação das bibliotecas junto com a do app, expondo classes Kotlin duplicadas no módulo gerado Cordova. As tarefas Gradle foram qualificadas com `:app:`. O typecheck também detectou uma asserção de interface usando um método ausente no tipo retornado por `get`. A suíte manteve a asserção usando `find`. As duas verificações fazem parte do fluxo de CI.
+
+O ADB local listou zero aparelhos. Teste físico, ergonomia da seleção por toque, TalkBack e atualização sobre uma versão anterior continuam pendentes. B05 inicia o registro de tentativas com snapshot imutável e diagnóstico pelas últimas 20 respostas por competência.
+
+G1 comprovado. O [teste instrumentado no Android 15](https://github.com/TymotheoTrisch/redacao-lab/actions/runs/45078001102) instalou o APK em emulador limpo, confirmou modo avião ativo, gravou anotação e reforço, encerrou o processo e os recuperou ao retomar o bloco. As interações de seleção foram automatizadas pelo WebView. O APK de referência está preservado em `artifacts/debug/redacao-lab-0.1.0-debug.apk`.

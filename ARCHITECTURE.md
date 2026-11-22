@@ -26,3 +26,7 @@ Adaptadores de saída exclusivamente para fontes aprovadas; chamadas HTTPS, time
 
 ## Testes e qualidade
 Unitários: cálculo de prioridades, revisão, planejamento, rubricas, validação e anchors. Integração: SQLite real, migrations e restauração; teste no Android obrigatório para plugins. Smoke: modo avião, reinício, atualização assinada e compartilhamento. CI opcional apenas código e fixtures sintéticas; sem dados pessoais. Registrar decisões, limitações e evidências no README e docs/adr.
+
+## ADR-002 — identidade e persistência da primeira build
+
+Adotados `com.redacaolab.personal`, versionCode 1, schema SQLite 1 e catálogo 1. O plugin abre o banco no sandbox privado, sem criptografia adicional. O seed grava o catálogo em transação. As views leem o mesmo catálogo validado que alimenta o seed, possibilitando busca offline e prévia de leitura no navegador. A revisão inicial usa o tópico da aula como unidade. O manifesto desta fatia dispensa internet. O certificado público do build debug local está registrado no README.
