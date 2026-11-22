@@ -68,4 +68,4 @@ Instalação limpa de dependências, ESLint, TypeScript strict, 25 testes Vitest
 
 O ADB local listou zero aparelhos. Teste físico, ergonomia da seleção por toque, TalkBack e atualização sobre uma versão anterior continuam pendentes. B05 inicia o registro de tentativas com snapshot imutável e diagnóstico pelas últimas 20 respostas por competência.
 
-G1 comprovado. O [teste instrumentado no Android 15](https://github.com/TymotheoTrisch/redacao-lab/actions/runs/45078001102) instalou o APK em emulador limpo, confirmou modo avião ativo, gravou anotação e reforço, encerrou o processo e os recuperou ao retomar o bloco. As interações de seleção foram automatizadas pelo WebView. O APK de referência está preservado em `artifacts/debug/redacao-lab-0.1.0-debug.apk`.
+G1 comprovado. O [teste instrumentado no Android 15](https://github.com/TymotheoTrisch/redacao-lab/actions/runs/45078376270) instalou o APK em emulador limpo, confirmou modo avião ativo, gravou anotação e reforço, encerrou o processo e os recuperou ao retomar o bloco. As interações de seleção foram automatizadas pelo WebView. O APK de referência está preservado em `artifacts/debug/redacao-lab-0.1.0-debug.apk`.
