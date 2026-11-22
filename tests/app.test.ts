@@ -27,13 +27,18 @@ it('retoma o bloco salvo e só confirma leitura após gravar no repositório', a
   const repo = {
     preferences: async () => ({ examDate:'',minutes:20,days:[2],theme:'system' }),
     progress: async () => [{ lessonId:first.id,blockId:first.blocks[1].id,status:'reading' }],
-    reviews: async () => [], annotations: async () => [], saveProgress: vi.fn()
+    privateModules: async () => [], latestAnswers: async () => ({}), moduleNote: async () => '', reviews: async () => [], annotations: async () => [], saveProgress: vi.fn()
   }
   open.mockResolvedValue(repo)
   await launch()
+  const scroll = vi.fn()
+  HTMLElement.prototype.scrollIntoView = scroll
   await app.get('.resume').trigger('click')
   await flushPromises()
-  expect(app.get('.reading-text').text()).toBe(first.blocks[1].text)
+  expect(app.get('[id="'+first.blocks[1].id+'"] .reading-text').text()).toBe(first.blocks[1].text)
+  expect(app.findAll('.lesson')).toHaveLength(catalog.modules[0].lessons.length)
+  expect(app.text()).not.toContain('Próximo bloco')
+  expect(scroll).toHaveBeenCalled()
   expect(repo.saveProgress).toHaveBeenCalledWith(first.id,first.blocks[1].id)
 })
 
@@ -54,7 +59,11 @@ it('busca sem acentos no navegador e permite conferir o exercício da aula', asy
   expect(app.get('.module').text()).toContain('Argumentação')
   await app.get('.row').trigger('click')
   await flushPromises()
-  expect(app.find('.practice article').exists()).toBe(true)
+  const question=app.get('.passage .question')
+  await question.get('input[type=radio]').setValue(true)
+  await question.trigger('submit')
+  expect(question.get('[role=status]').text()).toContain(catalog.questions.find(q=>q.prompt===question.get('legend').text())?.explanation)
+  expect(app.find('.lesson .passage + .passage').exists()).toBe(true)
   expect(app.find('.annotations form').exists()).toBe(false)
   expect(open).not.toHaveBeenCalled()
 })

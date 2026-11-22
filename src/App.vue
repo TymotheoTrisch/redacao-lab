@@ -2,10 +2,15 @@
 import { computed, onMounted, ref, shallowRef } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { openRepository, type Preferences, type Progress, type Repository, type Review } from './db'
-import { lessons, searchModules, useNavigation, type Lesson } from './navigation'
-import { catalog } from './catalog'
-const catalogQuestions = catalog.questions
-import AnnotationPanel from './AnnotationPanel.vue'
+import { searchModules, useNavigation, type Lesson } from './navigation'
+import { catalog, type Catalog } from './catalog'
+import ModuleReader from './ModuleReader.vue'
+import ImportPanel from './ImportPanel.vue'
+const imported = shallowRef<Catalog[]>([])
+const allModules = computed(() => [...catalog.modules,...imported.value.flatMap(p=>p.modules).sort((a,b)=>a.order-b.order)])
+const questions = computed(() => [...catalog.questions,...imported.value.flatMap(p=>p.questions)])
+const lessons = computed(() => allModules.value.flatMap(m=>m.lessons))
+const diagnosis = ref<{title:string;total:number;hits:number}[]>([])
 
 const nav = useNavigation()
 const native = Capacitor.getPlatform() === 'android'
@@ -15,15 +20,15 @@ const error = ref('')
 const message = ref('')
 const progress = ref<Progress[]>([])
 const reviews = ref<Review[]>([])
-const prefs = ref<Preferences>({ examDate: '', minutes: 30, days: [1,2,3,4,5], theme: 'system' })
-const lesson = ref<Lesson>(lessons[0])
+const prefs = ref<Preferences>({ examDate: '', minutes: 30, days: [1,2,3,4,5], theme: 'dark' })
+const lesson = ref<Lesson>(lessons.value[0])
 const page = ref(0)
 const block = computed(() => lesson.value.blocks[page.value])
-const modules = computed(() => searchModules(nav.query))
-const latest = computed(() => lessons.find(l => l.id === progress.value[0]?.lessonId))
-const name = (id: string) => lessons.find(l => l.id === id)?.title ?? id
+const modules = computed(() => searchModules(nav.query,allModules.value))
+const latest = computed(() => lessons.value.find(l => l.id === progress.value[0]?.lessonId))
+const name = (id: string) => lessons.value.find(l => l.id === id)?.title ?? id
 const status = (id: string) => progress.value.find(p => p.lessonId === id)?.status
-const kind = {concept: 'Conceito', example: 'Exemplo', practice: 'Prática'}
+const activeModule = computed(() => allModules.value.find(m => m.lessons.some(l => l.id===lesson.value.id))!)
 const weekdays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
 
 async function action(work: () => Promise<void>) {
@@ -38,6 +43,7 @@ function initialize() {
     if (!native) return
     const db = await openRepository()
     const settings = await db.preferences()
+    imported.value = await db.privateModules()
     progress.value = await db.progress()
     reviews.value = await db.reviews()
     prefs.value = settings
@@ -48,6 +54,7 @@ function initialize() {
 onMounted(initialize)
 function go(screen: typeof nav.screen) {
   nav.screen = screen
+  if (screen === 'review' && repo.value) void repo.value.diagnosis().then(rows => { diagnosis.value=rows }).catch(() => { error.value='Não foi possível ler o diagnóstico.' })
   error.value = message.value = ''
   window.scrollTo(0, 0)
 }
@@ -67,10 +74,10 @@ async function read(item: Lesson, index?: number) {
 function complete() {
   return action(async () => {
     const db = repo.value!
-    await db.saveProgress(lesson.value.id, block.value.id, 'done')
+    await db.finishModule(activeModule.value.id)
     progress.value = await db.progress()
     go('library')
-    message.value = 'Aula concluída.'
+    message.value = 'Módulo concluído.'
   })
 }
 function updateReview(work: (db: Repository) => Promise<unknown>, feedback: string) {
@@ -79,6 +86,18 @@ function updateReview(work: (db: Repository) => Promise<unknown>, feedback: stri
     reviews.value = await repo.value!.reviews()
     message.value = feedback
   })
+}
+async function position(lessonId:string,blockId:string) {
+  const db = repo.value
+  if (!db) return
+  try {
+    await db.saveProgress(lessonId,blockId)
+    progress.value = await db.progress()
+  } catch { error.value='Não foi possível guardar a posição de leitura.' }
+}
+async function addPrivate(pack:Catalog) {
+  await repo.value!.importPrivate(pack)
+  imported.value=await repo.value!.privateModules()
 }
 function saveSettings() {
   return action(async () => {
@@ -90,10 +109,10 @@ function saveSettings() {
 </script>
 
 <template>
-  <header class="mast"><span class="brand">Redação <i>Lab</i></span><span>Estudo pessoal</span></header>
-  <nav aria-label="Navegação principal">
+  <header v-if="nav.screen!=='reader'" class="mast"><span class="brand">Redação <i>Lab</i></span><span>Estudo pessoal</span></header>
+  <nav v-if="nav.screen!=='reader'" aria-label="Navegação principal">
     <button v-for="tab in (['library','review','settings'] as const)" :key="tab" :disabled="busy || (native && !repo)"
-      :aria-current="(nav.screen === tab || (tab === 'library' && nav.screen === 'reader')) ? 'page' : undefined" @click="go(tab)">
+      :aria-current="(nav.screen === tab) ? 'page' : undefined" @click="go(tab)">
       {{ {library:'Biblioteca',review:'Reforço',settings:'Preferências'}[tab] }}
     </button>
   </nav>
@@ -107,7 +126,7 @@ function saveSettings() {
     <template v-else>
       <p v-if="!native" class="notice">Prévia de leitura. No Android, o SQLite guarda seu progresso e suas anotações.</p>
       <template v-if="nav.screen === 'library'">
-        <h1>Biblioteca</h1>
+        <div class="library-title"><h1>Biblioteca</h1><span>{{ allModules.length }} módulos</span></div>
         <button v-if="latest" class="resume" :disabled="busy" @click="read(latest)">Retomar leitura · {{ latest.title }} →</button>
         <label class="field">Buscar nas aulas<input v-model="nav.query" type="search" placeholder="Tema, título ou trecho"></label>
         <p v-if="!modules.length">Nenhuma aula encontrada.</p>
@@ -119,27 +138,15 @@ function saveSettings() {
         </section>
       </template>
       <template v-else-if="nav.screen === 'reader'">
-        <button class="link" :disabled="busy" @click="go('library')">← Biblioteca</button>
-        <h1>{{ lesson.title }}</h1>
-        <p class="meta">{{ kind[block.kind] }} · Bloco {{ page + 1 }} de {{ lesson.blocks.length }}</p>
-        <AnnotationPanel :lesson-id="lesson.id" :block="block" :repo="repo" />
-        <div class="actions">
-          <button :disabled="busy || page === 0" @click="read(lesson,page-1)">Anterior</button>
-          <button v-if="page+1 < lesson.blocks.length" class="primary" :disabled="busy" @click="read(lesson,page+1)">Próximo bloco</button>
-          <button v-else-if="repo" class="primary" :disabled="busy" @click="complete">Concluir aula</button>
-        </div>
-        <button v-if="repo" :disabled="busy || reviews.some(r => r.lessonId === lesson.id)" @click="updateReview(db => db.markReview(lesson.id), 'Aula marcada para reforço.')">
-          {{ reviews.some(r => r.lessonId === lesson.id) ? 'Marcada para reforço' : 'Marcar para reforço' }}
-        </button>
-        <details class="practice"><summary>Exercícios da aula</summary>
-          <article v-for="q in catalogQuestions.filter(q => q.lessonId === lesson.id)" :key="q.id">
-            <h3>{{ q.prompt }}</h3><ol type="A"><li v-for="option in q.options" :key="option">{{ option }}</li></ol>
-            <details><summary>Conferir resposta</summary><p>{{ q.options[q.answer] }}. {{ q.explanation }}</p></details>
-          </article>
-        </details>
+        <ModuleReader :key="activeModule.id" :module="activeModule" :start-id="block.id" :repo="repo" :reviews="reviews" :questions="questions"
+          @back="go('library')" @position="position" @finish="complete"
+          @reinforce="id=>updateReview(db=>db.markReview(id),'Aula marcada para reforço.')" />
       </template>
       <template v-else-if="nav.screen === 'review'">
         <h1>Reforço</h1>
+        <details v-if="diagnosis.length" class="module"><summary>Diagnóstico por competência</summary>
+          <p v-for="d in diagnosis" :key="d.title"><strong>{{ d.title }}</strong><br>{{ !d.total ? 'Sem tentativas' : d.hits+' acerto(s) em '+d.total+' tentativa(s) recentes' }}<small v-if="d.total && d.total<5"> · Evidência insuficiente</small></p>
+        </details>
         <p v-if="!reviews.length">As aulas que você marcar para reforço aparecerão aqui com a data da próxima revisão.</p>
         <section v-for="r in reviews" :key="r.id" class="module">
           <h2>{{ name(r.lessonId) }}</h2><p>Revisar em {{ r.dueDate.split('-').reverse().join('/') }}</p>
@@ -159,6 +166,7 @@ function saveSettings() {
           <label class="field">Aparência<select v-model="prefs.theme"><option value="system">Seguir o sistema</option><option value="light">Clara</option><option value="dark">Escura</option></select></label>
           <button class="primary" :disabled="!prefs.days.length">Salvar preferências</button>
         </fieldset></form>
+        <ImportPanel v-if="repo" :on-import="addPrivate" />
       </template>
     </template>
   </main>
