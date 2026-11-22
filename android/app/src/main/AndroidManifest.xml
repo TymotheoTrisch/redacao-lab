@@ -29,7 +29,9 @@
             </intent-filter>
 
         </activity>
+        <receiver android:name="androidx.profileinstaller.ProfileInstallReceiver" tools:node="remove" />
     </application>
 </manifest>
+
 
 

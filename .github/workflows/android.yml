@@ -23,6 +23,7 @@ jobs:
           java-version: '21'
       - run: npm ci && npm run lint && npm test && npm run build && npm run android:sync
       - run: ./android/gradlew -p android assembleDebug assembleDebugAndroidTest
+      - run: python3 tests/android-manifest.py android/app/build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml
       - name: Habilitar KVM no runner
         run: sudo chmod 666 /dev/kvm
       - name: Validar leitura e persistência em modo avião
@@ -32,3 +33,4 @@ jobs:
           arch: x86_64
           target: google_apis
           script: bash tests/android-offline.sh
+
