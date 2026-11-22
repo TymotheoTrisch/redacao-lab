@@ -1,0 +1,796 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "redacao-lab-original",
+      "title": "Redação Lab — material didático autoral",
+      "origin": "original"
+    }
+  ],
+  "competencies": [
+    {
+      "id": "interpretacao",
+      "title": "Interpretação de propostas"
+    },
+    {
+      "id": "tese",
+      "title": "Tese e posicionamento"
+    },
+    {
+      "id": "argumentacao",
+      "title": "Argumentação e contrapontos"
+    },
+    {
+      "id": "concordancia",
+      "title": "Concordância"
+    },
+    {
+      "id": "coesao",
+      "title": "Coesão e continuidade"
+    }
+  ],
+  "modules": [
+    {
+      "id": "interpretacao",
+      "title": "Interpretação de propostas",
+      "order": 1,
+      "version": 1,
+      "lessons": [
+        {
+          "id": "interpretacao-recorte",
+          "title": "Delimitar o que a proposta pede",
+          "competencyIds": [
+            "interpretacao"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "interpretacao-recorte-conceito",
+              "kind": "concept",
+              "text": "Uma proposta combina um assunto amplo, um recorte e uma ação. Circule o verbo que orienta a escrita e sublinhe os termos que restringem a discussão. Use esses limites para decidir quais ideias entram no texto."
+            },
+            {
+              "id": "interpretacao-recorte-exemplo",
+              "kind": "example",
+              "text": "Leia a proposta fictícia “Discuta como ampliar o acesso à leitura no turno da noite em uma escola”. O assunto é leitura. O recorte exige considerar quem frequenta a escola à noite. O verbo pede uma discussão sobre caminhos de acesso."
+            },
+            {
+              "id": "interpretacao-recorte-pratica",
+              "kind": "practice",
+              "text": "Experimente comparar duas ideias: doar livros para a cidade e abrir a biblioteca no intervalo noturno. A segunda responde diretamente ao recorte. Para usar a primeira, seria preciso explicar como os livros chegariam aos leitores daquele turno."
+            }
+          ]
+        },
+        {
+          "id": "interpretacao-inferencia",
+          "title": "Distinguir informação e inferência",
+          "competencyIds": [
+            "interpretacao"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "interpretacao-inferencia-conceito",
+              "kind": "concept",
+              "text": "A informação explícita pode ser localizada no trecho. Uma inferência liga pistas do texto por meio de um raciocínio. Ao inferir, explique qual pista sustenta sua leitura e até onde ela permite chegar."
+            },
+            {
+              "id": "interpretacao-inferencia-exemplo",
+              "kind": "example",
+              "text": "No relato fictício “A oficina começou às sete. Quando o ônibus chegou, a primeira atividade já estava no quadro”, a ordem dos acontecimentos está explícita. É plausível que os passageiros tenham perdido o início. O trecho não informa o motivo do horário de chegada."
+            },
+            {
+              "id": "interpretacao-inferencia-pratica",
+              "kind": "practice",
+              "text": "Releia a frase “Ao saber que a reunião mudara de sala, ela voltou ao corredor”. Anote o que o narrador afirma e uma hipótese sobre o retorno. Confira se sua hipótese exige atribuir à personagem um sentimento que a frase não registra."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tese",
+      "title": "Tese e posicionamento",
+      "order": 2,
+      "version": 1,
+      "lessons": [
+        {
+          "id": "tese-posicao",
+          "title": "Formular uma posição discutível",
+          "competencyIds": [
+            "tese"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "tese-posicao-conceito",
+              "kind": "concept",
+              "text": "Tema é o assunto em debate. A tese apresenta a resposta que o texto defenderá sobre esse assunto. Para formulá-la, transforme o tema em pergunta e escreva uma resposta que admita contestação e possa ser sustentada."
+            },
+            {
+              "id": "tese-posicao-exemplo",
+              "kind": "example",
+              "text": "Para “Como usar um pátio escolar compartilhado?”, “O pátio tem vários usos” apresenta o cenário. “A escola deve combinar horários de esporte e de leitura para atender grupos com necessidades diferentes” propõe uma decisão e indica sua razão."
+            },
+            {
+              "id": "tese-posicao-pratica",
+              "kind": "practice",
+              "text": "Escreva uma resposta diferente para a mesma pergunta. Experimente defender espaços simultâneos. Depois aponte qual vantagem sustentaria essa escolha e qual dificuldade um leitor poderia levantar."
+            }
+          ]
+        },
+        {
+          "id": "tese-alcance",
+          "title": "Ajustar o alcance da tese",
+          "competencyIds": [
+            "tese"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "tese-alcance-conceito",
+              "kind": "concept",
+              "text": "Palavras como “todos”, “sempre” e “qualquer” ampliam o compromisso de uma afirmação. Escolha o alcance que suas razões conseguem sustentar. Delimitar público, situação ou condição torna a tese verificável e orienta o desenvolvimento."
+            },
+            {
+              "id": "tese-alcance-exemplo",
+              "kind": "example",
+              "text": "Se o texto analisa uma oficina de escrita com revisão entre pares, a frase “qualquer estudante aprende melhor em grupo” exige muito mais evidência. Uma tese mais precisa seria “Na oficina, ler o rascunho de um colega pode ajudar a perceber lacunas na própria explicação”."
+            },
+            {
+              "id": "tese-alcance-pratica",
+              "kind": "practice",
+              "text": "Revise a tese “A biblioteca deve ficar aberta o tempo inteiro”. Suponha que você tenha argumentos apenas para o intervalo. Reescreva a proposta delimitando horário, público e a necessidade que esse atendimento resolveria."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "argumentacao",
+      "title": "Argumentação e contrapontos",
+      "order": 3,
+      "version": 1,
+      "lessons": [
+        {
+          "id": "argumentacao-ponte",
+          "title": "Ligar um exemplo à conclusão",
+          "competencyIds": [
+            "argumentacao"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "argumentacao-ponte-conceito",
+              "kind": "concept",
+              "text": "Um parágrafo argumentativo pode começar por uma razão, apresentar um exemplo e explicitar a relação entre ambos. O leitor precisa entender que característica do exemplo sustenta a tese. Um caso isolado ilustra uma possibilidade e pede cautela ao generalizar."
+            },
+            {
+              "id": "argumentacao-ponte-exemplo",
+              "kind": "example",
+              "text": "Suponha que uma oficina guarde a chave do armário em uma única sala. Em um encontro, a turma precisou esperar essa sala abrir. O atraso ilustra um ponto específico: depender de um só local de retirada pode interromper a atividade."
+            },
+            {
+              "id": "argumentacao-ponte-pratica",
+              "kind": "practice",
+              "text": "Defenda uma segunda forma de acesso à chave. Use o episódio para mostrar como ela reduziria a espera. Confira se sua conclusão respeita o exemplo: ele descreve uma espera e não informa quantas ocorreram no semestre."
+            }
+          ]
+        },
+        {
+          "id": "argumentacao-objecao",
+          "title": "Responder a uma objeção",
+          "competencyIds": [
+            "argumentacao"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "argumentacao-objecao-conceito",
+              "kind": "concept",
+              "text": "Formule a objeção como um leitor que discorda poderia apresentá-la. Reconheça a parte que faz sentido e explique como sua proposta lida com a dificuldade. A resposta pode ajustar a tese, incluir uma condição ou mostrar por que um benefício compensa o custo."
+            },
+            {
+              "id": "argumentacao-objecao-exemplo",
+              "kind": "example",
+              "text": "Uma turma propõe ampliar o empréstimo de jogos. Surge a objeção de que peças pequenas podem se perder. Uma resposta pertinente é testar a ampliação com conferência na devolução. Assim, a proposta incorpora o cuidado com o acervo."
+            },
+            {
+              "id": "argumentacao-objecao-pratica",
+              "kind": "practice",
+              "text": "Escreva uma objeção a um mural aberto para recados. Se a preocupação for a permanência de avisos vencidos, sugira uma regra com data de retirada. Verifique se sua resposta enfrenta exatamente o problema formulado."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "concordancia",
+      "title": "Concordância",
+      "order": 4,
+      "version": 1,
+      "lessons": [
+        {
+          "id": "concordancia-sujeito",
+          "title": "Encontrar o núcleo do sujeito",
+          "competencyIds": [
+            "concordancia"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "concordancia-sujeito-conceito",
+              "kind": "concept",
+              "text": "Na concordância verbal, identifique o sujeito e procure a palavra que organiza esse grupo. Um termo no plural entre o núcleo e o verbo pode induzir ao erro. Leia a frase sem o complemento para testar a relação."
+            },
+            {
+              "id": "concordancia-sujeito-exemplo",
+              "kind": "example",
+              "text": "Em “A lista de materiais acompanha o pedido”, o núcleo do sujeito é “lista”. Remova “de materiais” e releia: “A lista acompanha o pedido”. Ao passar o núcleo ao plural, muda também o verbo: “As listas de materiais acompanham o pedido”."
+            },
+            {
+              "id": "concordancia-sujeito-pratica",
+              "kind": "practice",
+              "text": "Complete “O conjunto de propostas ___ em análise” com “está” ou “estão”. Refaça a leitura sem o complemento. A forma “está” acompanha “conjunto”. Verifique se o sentido se mantém ao recolocar as palavras retiradas."
+            }
+          ]
+        },
+        {
+          "id": "concordancia-nominal",
+          "title": "Revisar a concordância nominal",
+          "competencyIds": [
+            "concordancia"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "concordancia-nominal-conceito",
+              "kind": "concept",
+              "text": "Artigos e adjetivos se relacionam com o substantivo em gênero e número. Na revisão, localize de qual substantivo se declara uma característica. A distância entre essas palavras pode esconder a relação."
+            },
+            {
+              "id": "concordancia-nominal-exemplo",
+              "kind": "example",
+              "text": "Em “As fichas do arquivo estavam incompletas”, “incompletas” caracteriza “fichas”. O substantivo “arquivo”, mais próximo, pertence a um complemento. Compare com “O arquivo das fichas estava incompleto”: agora a característica recai sobre “arquivo”."
+            },
+            {
+              "id": "concordancia-nominal-pratica",
+              "kind": "practice",
+              "text": "Reescreva “A proposta parecia adequada” com “os pedidos” como sujeito. Leia a sequência “Os pedidos pareciam adequados” e identifique os três ajustes: artigo, verbo e adjetivo acompanharam o novo sujeito."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coesao",
+      "title": "Coesão e continuidade",
+      "order": 5,
+      "version": 1,
+      "lessons": [
+        {
+          "id": "coesao-referencia",
+          "title": "Tornar a referência inequívoca",
+          "competencyIds": [
+            "coesao"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "coesao-referencia-conceito",
+              "kind": "concept",
+              "text": "Pronomes e expressões de retomada ajudam o leitor a reconhecer de quem ou de que se fala. Quando há dois antecedentes plausíveis, repita o nome necessário ou reorganize a frase. A clareza depende da relação entre as frases."
+            },
+            {
+              "id": "coesao-referencia-exemplo",
+              "kind": "example",
+              "text": "Leia “A equipe entregou a maquete à comissão quando ela ficou pronta”. Tanto “equipe” quanto “maquete” e “comissão” são nomes femininos. Se a intenção for falar da maquete, a frase “Assim que a maquete ficou pronta, a equipe a entregou à comissão” explicita a referência."
+            },
+            {
+              "id": "coesao-referencia-pratica",
+              "kind": "practice",
+              "text": "Reescreva “O grupo mostrou o roteiro ao professor, que seria revisado no dia seguinte”. Faça o leitor reconhecer imediatamente o objeto da revisão. Uma saída é encerrar a primeira oração e começar a seguinte com “O roteiro seria revisado”."
+            }
+          ]
+        },
+        {
+          "id": "coesao-conectores",
+          "title": "Escolher o conector pelo sentido",
+          "competencyIds": [
+            "coesao"
+          ],
+          "sourceIds": [
+            "redacao-lab-original"
+          ],
+          "blocks": [
+            {
+              "id": "coesao-conectores-conceito",
+              "kind": "concept",
+              "text": "Antes de escolher um conector, diga com suas palavras que relação precisa construir. A segunda ideia pode acrescentar uma informação, apresentar uma causa, indicar uma consequência ou contrariar uma expectativa criada pela primeira."
+            },
+            {
+              "id": "coesao-conectores-exemplo",
+              "kind": "example",
+              "text": "Compare “A sala estava vazia porque a turma saiu” e “A turma saiu, por isso a sala ficou vazia”. A primeira versão parte da situação e apresenta a causa. A segunda parte da saída e mostra seu efeito. A ordem muda o trabalho do conector."
+            },
+            {
+              "id": "coesao-conectores-pratica",
+              "kind": "practice",
+              "text": "Una “O prazo era curto” a “A equipe concluiu a revisão”. Se a intenção é destacar o resultado inesperado, experimente “Embora o prazo fosse curto, a equipe concluiu a revisão”. Confira se o conector e o modo verbal combinam."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "questao-interpretacao-turno",
+      "version": 1,
+      "competencyId": "interpretacao",
+      "lessonId": "interpretacao-recorte",
+      "type": "choice",
+      "prompt": "Qual ideia atende diretamente à proposta de ampliar o acesso à leitura no turno da noite em uma escola?",
+      "options": [
+        "Recontar a história da escrita.",
+        "Examinar o empréstimo de livros no intervalo noturno.",
+        "Enumerar livrarias de outras cidades."
+      ],
+      "answer": 1,
+      "explanation": "O empréstimo durante o intervalo relaciona uma ação de acesso ao público e ao horário indicados. As outras ideias precisariam de uma ligação adicional com o recorte.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-interpretacao-verbo",
+      "version": 1,
+      "competencyId": "interpretacao",
+      "lessonId": "interpretacao-recorte",
+      "type": "choice",
+      "prompt": "Uma proposta pede “compare dois usos para o pátio”. Qual plano cumpre o comando?",
+      "options": [
+        "Descrever apenas a horta.",
+        "Contar quando o prédio foi construído.",
+        "Confrontar horta e área de jogos pelo espaço e pelo horário necessários."
+      ],
+      "answer": 2,
+      "explanation": "Comparar exige relacionar as duas alternativas por critérios em comum. A descrição de apenas uma delas deixa parte do comando sem resposta.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-interpretacao-publico",
+      "version": 1,
+      "competencyId": "interpretacao",
+      "lessonId": "interpretacao-recorte",
+      "type": "choice",
+      "prompt": "Em “Discuta o acolhimento de estudantes recém-chegados à escola”, que expressão delimita o público?",
+      "options": [
+        "Estudantes recém-chegados à escola.",
+        "Discuta.",
+        "O acolhimento."
+      ],
+      "answer": 0,
+      "explanation": "A expressão identifica quem recebe o acolhimento. O verbo indica a tarefa e o substantivo nomeia o assunto.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-interpretacao-horario",
+      "version": 1,
+      "competencyId": "interpretacao",
+      "lessonId": "interpretacao-inferencia",
+      "type": "choice",
+      "prompt": "Leia: “O aviso foi afixado depois do último ensaio”. Qual afirmação o trecho garante?",
+      "options": [
+        "Todos leram o aviso em casa.",
+        "O ensaio mencionado ocorreu antes da afixação.",
+        "O aviso foi escrito por um músico."
+      ],
+      "answer": 1,
+      "explanation": "A palavra “depois” estabelece uma sequência. O trecho não identifica os leitores nem o autor.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-interpretacao-pista",
+      "version": 1,
+      "competencyId": "interpretacao",
+      "lessonId": "interpretacao-inferencia",
+      "type": "choice",
+      "prompt": "Leia: “A sala ficou escura. Alguém abriu as cortinas e a turma voltou a ler”. Qual inferência se apoia na sequência?",
+      "options": [
+        "A turma pediu uma nova lâmpada.",
+        "A janela estava quebrada.",
+        "A luz que entrou ajudou a leitura."
+      ],
+      "answer": 2,
+      "explanation": "A retomada da leitura logo após a abertura das cortinas sustenta a relação com a iluminação. As outras hipóteses exigem pistas ausentes.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-tese-escolha",
+      "version": 1,
+      "competencyId": "tese",
+      "lessonId": "tese-posicao",
+      "type": "choice",
+      "prompt": "Qual frase apresenta uma tese sobre o uso do pátio?",
+      "options": [
+        "O pátio fica ao lado da biblioteca.",
+        "Como aproveitar o pátio?",
+        "A divisão de horários deve garantir espaço tanto ao jogo quanto à leitura."
+      ],
+      "answer": 2,
+      "explanation": "A terceira frase defende uma decisão discutível. A primeira descreve a localização e a segunda abre a discussão sem respondê-la.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-tese-resposta",
+      "version": 1,
+      "competencyId": "tese",
+      "lessonId": "tese-posicao",
+      "type": "choice",
+      "prompt": "Que pergunta ajuda a transformar o tema “empréstimo de materiais” em tese?",
+      "options": [
+        "Que regra de empréstimo a escola deveria adotar e por quê?",
+        "Quantas letras há em “material”?",
+        "Onde termina o título?"
+      ],
+      "answer": 0,
+      "explanation": "A pergunta solicita uma posição e uma justificativa capazes de orientar os argumentos. As demais tratam de aspectos gráficos.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-tese-razao",
+      "version": 1,
+      "competencyId": "tese",
+      "lessonId": "tese-posicao",
+      "type": "choice",
+      "prompt": "Em “A turma deveria alternar os relatores para distribuir a prática de síntese”, qual é a razão apresentada?",
+      "options": [
+        "A turma tem relatores.",
+        "Distribuir a prática de síntese.",
+        "Alternar os relatores."
+      ],
+      "answer": 1,
+      "explanation": "“Para” introduz a finalidade que justifica a escolha. A alternância é a medida defendida.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-tese-limite",
+      "version": 1,
+      "competencyId": "tese",
+      "lessonId": "tese-alcance",
+      "type": "choice",
+      "prompt": "Uma observação descreve apenas um encontro de revisão. Qual afirmação respeita esse limite?",
+      "options": [
+        "Toda oficina sempre funciona.",
+        "Revisar em grupo é indispensável em todos os gêneros.",
+        "Nesse encontro, a revisão ajudou a esclarecer o último parágrafo."
+      ],
+      "answer": 2,
+      "explanation": "A terceira afirmação restringe a conclusão ao episódio observado. As demais generalizam para situações sem evidência.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-tese-condicao",
+      "version": 1,
+      "competencyId": "tese",
+      "lessonId": "tese-alcance",
+      "type": "choice",
+      "prompt": "Qual versão explicita uma condição para ampliar o horário da sala de estudos?",
+      "options": [
+        "A sala poderia abrir mais cedo se houvesse supervisão nesse horário.",
+        "A sala é importante.",
+        "A sala deve abrir cedo em qualquer circunstância."
+      ],
+      "answer": 0,
+      "explanation": "A oração iniciada por “se” define a condição da proposta. As outras versões omitem condições ou descartam sua relevância.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-argumentacao-elo",
+      "version": 1,
+      "competencyId": "argumentacao",
+      "lessonId": "argumentacao-ponte",
+      "type": "choice",
+      "prompt": "Um grupo perdeu tempo procurando materiais sem rótulo. Qual raciocínio liga esse caso à proposta de etiquetar as caixas?",
+      "options": [
+        "Toda etiqueta melhora a nota da turma.",
+        "Indicar o conteúdo pode reduzir o tempo gasto abrindo caixas para conferir.",
+        "Os materiais devem ser descartados."
+      ],
+      "answer": 1,
+      "explanation": "O mecanismo apresentado liga identificação e tempo de procura. O episódio não informa notas nem justifica o descarte.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-argumentacao-medida",
+      "version": 1,
+      "competencyId": "argumentacao",
+      "lessonId": "argumentacao-ponte",
+      "type": "choice",
+      "prompt": "Após observar uma única fila, o autor escreve “isso acontece todos os dias”. Qual informação falta?",
+      "options": [
+        "A cor do balcão.",
+        "O nome de quem anotou.",
+        "Observações sobre a frequência em outros dias."
+      ],
+      "answer": 2,
+      "explanation": "A conclusão fala de frequência. Para sustentá-la, seria preciso examinar mais dias e a representatividade das observações.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-argumentacao-pertinencia",
+      "version": 1,
+      "competencyId": "argumentacao",
+      "lessonId": "argumentacao-ponte",
+      "type": "choice",
+      "prompt": "Que observação é mais pertinente para avaliar se um novo mapa ajuda a encontrar a sala de leitura?",
+      "options": [
+        "Comparar as dificuldades de localização em percursos semelhantes com e sem o mapa.",
+        "Contar as folhas usadas em outra disciplina.",
+        "Descrever a capa do primeiro livro da sala."
+      ],
+      "answer": 0,
+      "explanation": "A comparação observa diretamente a dificuldade de orientação. Folhas e capas não indicam se as pessoas encontram o destino.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-argumentacao-responder",
+      "version": 1,
+      "competencyId": "argumentacao",
+      "lessonId": "argumentacao-objecao",
+      "type": "choice",
+      "prompt": "Uma objeção ao empréstimo de jogos é a perda de peças. Qual resposta enfrenta essa dificuldade?",
+      "options": [
+        "Jogos têm cores variadas.",
+        "Uma lista de peças permite conferir cada conjunto na devolução.",
+        "Quem discorda nunca brincou."
+      ],
+      "answer": 1,
+      "explanation": "A lista oferece uma medida ligada à perda de peças. As demais respostas desviam do problema ou atacam quem o formulou.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-argumentacao-concessao",
+      "version": 1,
+      "competencyId": "argumentacao",
+      "lessonId": "argumentacao-objecao",
+      "type": "choice",
+      "prompt": "Qual frase reconhece um custo e mantém uma proposta condicionada?",
+      "options": [
+        "Qualquer crítica é injusta.",
+        "A reunião será na sexta.",
+        "Embora a conferência leve tempo, podemos testá-la em poucos conjuntos antes de ampliar."
+      ],
+      "answer": 2,
+      "explanation": "A oração com “embora” reconhece o custo. O teste limitado ajusta a proposta e permite avaliar o esforço exigido.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-concordancia-lista",
+      "version": 1,
+      "competencyId": "concordancia",
+      "lessonId": "concordancia-sujeito",
+      "type": "choice",
+      "prompt": "Complete: “A caixa de cadernos ___ sobre a mesa”.",
+      "options": [
+        "ficou",
+        "ficaram",
+        "ficamos"
+      ],
+      "answer": 0,
+      "explanation": "O núcleo “caixa” está na terceira pessoa do singular. O plural de “cadernos” pertence ao complemento.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-concordancia-posposto",
+      "version": 1,
+      "competencyId": "concordancia",
+      "lessonId": "concordancia-sujeito",
+      "type": "choice",
+      "prompt": "Complete: “Chegaram ao depósito ___”.",
+      "options": [
+        "a encomenda urgente",
+        "os novos cartazes",
+        "um único pacote"
+      ],
+      "answer": 1,
+      "explanation": "Mesmo depois do verbo, o sujeito controla a concordância. Apenas “os novos cartazes” corresponde à terceira pessoa do plural de “chegaram”.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-concordancia-mudanca",
+      "version": 1,
+      "competencyId": "concordancia",
+      "lessonId": "concordancia-sujeito",
+      "type": "choice",
+      "prompt": "Ao trocar “O caderno” por “Os cadernos” em “O caderno contém mapas”, qual forma verbal mantém o tempo e a concordância?",
+      "options": [
+        "continha",
+        "contém",
+        "contêm"
+      ],
+      "answer": 2,
+      "explanation": "No presente, “contém” corresponde ao singular e “contêm” ao plural. “Continha” muda o tempo e permanece no singular.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-concordancia-fichas",
+      "version": 1,
+      "competencyId": "concordancia",
+      "lessonId": "concordancia-nominal",
+      "type": "choice",
+      "prompt": "Complete: “As capas dos livros chegaram ___”.",
+      "options": [
+        "rasgados",
+        "rasgadas",
+        "rasgado"
+      ],
+      "answer": 1,
+      "explanation": "A característica se refere a “capas”, feminino plural. “Dos livros” especifica de que capas se trata.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-concordancia-troca",
+      "version": 1,
+      "competencyId": "concordancia",
+      "lessonId": "concordancia-nominal",
+      "type": "choice",
+      "prompt": "Qual reescrita substitui “o aviso” por “as placas” mantendo a concordância em “O aviso parecia legível”?",
+      "options": [
+        "As placas pareciam legíveis.",
+        "As placas parecia legíveis.",
+        "As placas pareciam legível."
+      ],
+      "answer": 0,
+      "explanation": "O plural de “placas” exige “pareciam” e “legíveis”. As demais alternativas deixam o verbo ou o adjetivo no singular.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-coesao-ambigua",
+      "version": 1,
+      "competencyId": "coesao",
+      "lessonId": "coesao-referencia",
+      "type": "choice",
+      "prompt": "Em “A monitora encontrou a coordenadora quando ela saiu”, como deixar explícito que quem saiu foi a coordenadora?",
+      "options": [
+        "Retirar “quando”.",
+        "Acrescentar “ontem” ao final.",
+        "Escrever “Quando a coordenadora saiu, a monitora a encontrou”."
+      ],
+      "answer": 2,
+      "explanation": "Nomear a coordenadora como sujeito de “saiu” resolve a disputa de referência. Alterar o horário não identifica a pessoa.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-coesao-retomada",
+      "version": 1,
+      "competencyId": "coesao",
+      "lessonId": "coesao-referencia",
+      "type": "choice",
+      "prompt": "Leia: “O grupo consertou o projetor. O aparelho voltou a exibir imagens”. O que “o aparelho” retoma?",
+      "options": [
+        "O projetor.",
+        "O grupo.",
+        "As imagens."
+      ],
+      "answer": 0,
+      "explanation": "“Aparelho” designa o equipamento já apresentado, o projetor. O grupo realiza a ação, e as imagens são exibidas.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-coesao-contraste",
+      "version": 1,
+      "competencyId": "coesao",
+      "lessonId": "coesao-conectores",
+      "type": "choice",
+      "prompt": "Complete para expressar quebra de expectativa: “A montagem era trabalhosa. ___, a turma terminou no prazo”.",
+      "options": [
+        "Por exemplo",
+        "Mesmo assim",
+        "Em outras palavras"
+      ],
+      "answer": 1,
+      "explanation": "“Mesmo assim” mostra que o resultado contraria a expectativa de atraso. Os outros conectores introduzem exemplo ou reformulação.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-coesao-causa",
+      "version": 1,
+      "competencyId": "coesao",
+      "lessonId": "coesao-conectores",
+      "type": "choice",
+      "prompt": "Complete para indicar a causa da mudança: “A leitura passou para o pátio ___ a sala estava em obras”.",
+      "options": [
+        "embora",
+        "para que",
+        "porque"
+      ],
+      "answer": 2,
+      "explanation": "“Porque” apresenta a obra como motivo da mudança. “Embora” introduziria concessão e “para que” expressaria finalidade.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    },
+    {
+      "id": "questao-coesao-efeito",
+      "version": 1,
+      "competencyId": "coesao",
+      "lessonId": "coesao-conectores",
+      "type": "choice",
+      "prompt": "Qual sequência apresenta explicitamente a consequência de um mural ter ficado cheio?",
+      "options": [
+        "O mural ficou cheio. Por isso, foi preciso abrir um segundo painel.",
+        "O mural ficou cheio, assim como o armário.",
+        "Antes de o mural ficar cheio, a turma chegou."
+      ],
+      "answer": 0,
+      "explanation": "A abertura de outro painel aparece como efeito da falta de espaço. As demais sequências comparam situações ou as ordenam no tempo.",
+      "sourceIds": [
+        "redacao-lab-original"
+      ]
+    }
+  ]
+}
