@@ -40,7 +40,7 @@ it('retoma o bloco salvo e só confirma leitura após gravar no repositório', a
 it('permite nova tentativa quando o SQLite está indisponível sem simular gravações', async () => {
   open.mockRejectedValue(new Error('Banco indisponível'))
   await launch()
-  expect(app.get('[role="alert"]').exists()).toBe(true)
+  expect(app.find('[role="alert"]').exists()).toBe(true)
   expect(app.find('.row').exists()).toBe(false)
   await app.get('main button').trigger('click')
   await flushPromises()
@@ -54,7 +54,8 @@ it('busca sem acentos no navegador e permite conferir o exercício da aula', asy
   expect(app.get('.module').text()).toContain('Argumentação')
   await app.get('.row').trigger('click')
   await flushPromises()
-  expect(app.get('.practice article').exists()).toBe(true)
+  expect(app.find('.practice article').exists()).toBe(true)
   expect(app.find('.annotations form').exists()).toBe(false)
   expect(open).not.toHaveBeenCalled()
 })
+
