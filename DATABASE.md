@@ -38,3 +38,8 @@ Notas: notas da Unisinos em centésimos (50,450,150,350); somar no código e exi
 
 ## Backup
 Formato JSON versionado com manifesto, data, schemaVersion, conteúdo/versionamento e coleções exportáveis; hash SHA-256 detecta corrupção, não autentica origem. Exportar snapshot consistente; sem credenciais. Restaurar somente após validar tamanho, schema, relações e compatibilidade. Importação em transação, backup prévio e rollback na falha. Recusar versões futuras não suportadas; nunca limpar banco antes de validar. Testar round-trip e falha simulada. Arquivo contém dados pessoais: avisar antes de exportar e oferecer criptografia em evolução futura.
+
+
+## Migration 002
+
+A atualização acrescenta notas gerais por ID de módulo, cópias validadas dos módulos importados e tentativas com ID, versão da questão, enunciado, opções, gabarito, explicação, escolha, competência e instante. O diagnóstico usa até 20 tentativas recentes por competência. O importador grava as relações de catálogo e o pacote privado na mesma transação, sem alterar a versão do catálogo embarcado.

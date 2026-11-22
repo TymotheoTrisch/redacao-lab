@@ -27,3 +27,8 @@ Primeira build: aulas completas e questões originais em interpretação, tese, 
 
 ## Fontes e atualidades
 Começar com RSS Agência Brasil (descobrir endpoint oficial), API IBGE e GDELT opcional. Validar documentação, disponibilidade, licença e limites antes de integrar. Guardar título, fonte, URL, data, resumo permitido; abrir artigo original; não contornar paywall. Repertório inclui contexto, evidência, limitações e possíveis argumentos. Não inventar citações, estatísticas ou critérios oficiais. Registrar data de consulta e status verificado/não verificado. Rubricas por edição; conferir edital Unisinos 2027/1.
+
+
+## Importação opcional no aparelho
+
+O usuário seleciona pares dos arquivos de conversa e quiz e confirma a prévia. O app valida nomes, tamanhos, estruturas e vínculos antes de inserir em transação. O identificador de módulo da fonte e os IDs das conversas são preservados no namespace privado. Itens de quiz sem identificador usam o hash do enunciado. Os arquivos de origem têm sequências independentes. A conversão distribui os exercícios ao longo da leitura preservando a ordem de cada sequência e desdobra associações em escolhas por par. Um pacote divergente com a mesma identidade requer tratamento explícito. A versão distribuída e os testes versionados contêm apenas material autoral e fixtures sintéticas.

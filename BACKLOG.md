@@ -69,3 +69,14 @@ Instalação limpa de dependências, ESLint, TypeScript strict, 25 testes Vitest
 O ADB local listou zero aparelhos. Teste físico, ergonomia da seleção por toque, TalkBack e atualização sobre uma versão anterior continuam pendentes. B05 inicia o registro de tentativas com snapshot imutável e diagnóstico pelas últimas 20 respostas por competência.
 
 G1 comprovado. O [teste instrumentado no Android 15](https://github.com/TymotheoTrisch/redacao-lab/actions/runs/45078376270) instalou o APK em emulador limpo, confirmou modo avião ativo, gravou anotação e reforço, encerrou o processo e os recuperou ao retomar o bloco. As interações de seleção foram automatizadas pelo WebView. O APK de referência está preservado em `artifacts/debug/redacao-lab-0.1.0-debug.apk`.
+
+## Leitor contínuo e treino · 0.2.0
+
+B03–B04 atualizados, com tema escuro por padrão, rolagem por módulo, estado de leitura por bloco, paleta contextual e painel de notas gerais. B05 entregue para questões de escolha do catálogo atual. Cada tentativa guarda sua versão e o feedback. O diagnóstico apresenta acertos e quantidade de observações nas últimas 20 tentativas; abaixo de cinco, indica evidência insuficiente. A próxima etapa do plano de estudos é B06.
+
+- 42 testes Vitest aprovados, ESLint e typecheck aprovados. Build web, sync e Gradle debug executados. O manifesto e a assinatura do APK local foram verificados.
+- Importação local sobre SQLite real dos 30 arquivos informados. Resultado: 15 módulos, 378 blocos e 106 questões normalizadas. A segunda importação manteve as quantidades e a integridade referencial. Testes no Git usam dados sintéticos.
+- Regressão da paleta de seleção: ao trocar de bloco depois de focar uma cor pelo teclado, a paleta antiga também podia continuar aberta. O teste falhou antes da correção. A preservação de foco passou a valer apenas para a seleção recolhida no menu ativo, e os nove testes de anotações passaram.
+- Layout conferido a 390 px em navegador: leitura em tema escuro, seis blocos no mesmo fluxo no primeiro módulo, retorno da resposta e ausência de transbordamento horizontal.
+- [Emulador Android 15 em modo avião](https://github.com/TymotheoTrisch/redacao-lab/actions/runs/45084982147): instalação limpa, resposta com feedback, nota geral e destaque recuperados após encerramento do processo. Em instalação separada, gravou uma anotação e um reforço na 0.1.0, instalou a 0.2.0 por cima e recuperou os dados.
+- O teste físico de gesto de seleção, TalkBack e escolha dos JSONs no seletor de arquivos do telefone permanece pendente. O ADB local não listou aparelho.

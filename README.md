@@ -1,14 +1,18 @@
 # Redação Lab para Android
 
-O primeiro APK de desenvolvimento reúne cinco módulos de estudo, dez aulas e 25 exercícios originais com explicações. Na Biblioteca, pesquise uma palavra do título ou do texto, abra uma aula e avance entre os blocos. Selecione um trecho para destacar, comentar e editar sua anotação. A opção Reforço guarda aulas para revisão. Em Preferências, ajuste a data da prova, os dias, o tempo de estudo e o tema.
+A versão 0.2.0 traz cinco módulos autorais, dez aulas e 25 exercícios. Na Biblioteca, abra uma aula ou retome o último trecho. O módulo inteiro rola na mesma tela. Escolha uma alternativa e toque em **Conferir resposta** para ver o gabarito e a explicação ali mesmo. As tentativas ficam no SQLite. Em **Reforço → Diagnóstico por competência**, consulte os acertos nas últimas 20 respostas e a quantidade de evidências.
 
-O app usa assets embarcados e SQLite no espaço privado do Android. A prévia no navegador permite ler o catálogo. Os recursos de persistência usam o plugin nativo. Nesta versão, os exercícios oferecem conferência de gabarito. O histórico de tentativas e o diagnóstico estão previstos em B05.
+Ao selecionar um trecho, toque em uma cor para grifar ou em **Anotar trecho** para comentar. Toque em um destaque para editá-lo. O ícone no canto inferior direito abre **Notas do módulo**, com uma nota geral e os trechos marcados das aulas. **Salvar e voltar** fecha o painel mantendo a posição de leitura. O padrão de aparência é escuro. Uma escolha de tema já salva continua valendo.
 
-## Instalação do debug
+### Módulos de referência no celular
 
-APK desta compilação no Windows:
+Em **Preferências → Importar referências privadas**, selecione os arquivos locais `moduloN.json` da pasta de conversas e `moduloN_quiz.json` da pasta de quiz. É possível adicioná-los em duas seleções. Toque em **Conferir importação**, revise a lista de módulos e toque em **Confirmar importação**. Os módulos entram na Biblioteca do dispositivo. O APK distribuído contém o material autoral. A reimportação de um pacote idêntico preserva as notas e as respostas.
 
-    C:\PROJETOS\Redacao-Lab\android\app\build\outputs\apk\debug\app-debug.apk
+## Instalar ou atualizar o debug
+
+No celular, entre na conta GitHub do projeto, abra a página do APK de teste, baixe o arquivo em **Assets** e toque em **Atualizar** sobre a 0.1.0. A cópia local no Windows fica em:
+
+    C:\PROJETOS\Redacao-Lab\artifacts\debug\redacao-lab-0.2.0-debug.apk
 
 Para a primeira instalação em um telefone autorizado, com o cabo USB conectado, execute na raiz:
 
@@ -23,12 +27,12 @@ Instale em aparelho identificado como `device`. Se houver vários, selecione o s
 | Propriedade | Build local |
 |---|---|
 | Aplicativo | com.redacaolab.personal |
-| Versão | 0.1.0, versionCode 1 |
+| Versão | 0.2.0, versionCode 2 |
 | Android mínimo / alvo | API 23 / 35 |
-| SHA-256 do APK debug | b52ed503d770105a9ef37eddc5f33c4cad3f83bc76884a33b1affff8cf5ad5bd |
+| SHA-256 do APK debug | d6697f83400fb89deccdf5462a82ed49a53d98dde26b43ed33faa24c73b15d0a |
 | SHA-256 do certificado debug | 737ccfbe30a6316e7d805fed5c50dbfc54697c6d51376056aa066be723a8c120 |
 
-O certificado debug é local. Um build em outra máquina pode ter outra assinatura. A chave privada fica fora do Git. A assinatura de release e os testes de atualização entre APKs serão tratados em B13.
+O certificado debug é local. Um build em outra máquina pode ter outra assinatura. A chave privada fica fora do Git. A assinatura de release permanece em B13. A CI compila a 0.1.0 com a mesma chave de teste do runner para exercer a atualização com dados sintéticos.
 
 ## Reproduzir a compilação
 
