@@ -36,9 +36,19 @@ export async function seed(db: Sql, data: SeedCatalog) {
           module_id=excluded.module_id,title=excluded.title,sort_order=excluded.sort_order,content_version=excluded.content_version,
           source_ids_json=excluded.source_ids_json,competency_ids_json=excluded.competency_ids_json`,
           [lesson.id,mod.id,lesson.title,lessonOrder,mod.version,JSON.stringify(lesson.sourceIds),JSON.stringify(lesson.competencyIds)])
+        const existing = await db.rows<{stable_key:string; body:string; kind:string}>(
+          'SELECT stable_key,body,kind FROM content_blocks WHERE lesson_id=? AND version=? ORDER BY sort_order',
+          [lesson.id, mod.version])
+        if (existing.length) {
+          const unchanged = existing.length === lesson.blocks.length && existing.every((row, index) => {
+            const block = lesson.blocks[index]
+            return row.stable_key === block.id && row.body === block.text && row.kind === block.kind
+          })
+          if (!unchanged) throw new Error('Incremente a versão do módulo ao alterar os blocos de uma aula.')
+          continue
+        }
         for (const [blockOrder,block] of lesson.blocks.entries()) {
-          await db.run(`INSERT INTO content_blocks VALUES (?,?,?,?,?,?) ON CONFLICT(lesson_id,stable_key,version) DO UPDATE SET
-            body=excluded.body,kind=excluded.kind,sort_order=excluded.sort_order`,
+          await db.run(`INSERT INTO content_blocks VALUES (?,?,?,?,?,?)`,
             [lesson.id,block.id,block.text,block.kind,mod.version,blockOrder])
         }
       }
@@ -51,3 +61,4 @@ export async function seed(db: Sql, data: SeedCatalog) {
     await db.run('INSERT INTO catalog_metadata VALUES (1,?) ON CONFLICT(id) DO UPDATE SET version=excluded.version',[data.version])
   })
 }
+

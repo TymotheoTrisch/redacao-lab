@@ -151,3 +151,15 @@ it('detecta ocorrência repetida mesmo quando as ocorrências se sobrepõem',() 
   const saved=capture('aa',0,2,1)
   expect(locate('aaa',2,saved)).toBeNull()
 })
+
+it('recusa a substituição do texto de uma versão já anotada', async () => {
+  const {db,repo} = connect()
+  await migrate(db)
+  await seed(db,fixture())
+  await repo.addAnnotation('l','b',3,5,'yellow','Conservar trecho')
+  const edited = fixture('Outro texto.')
+  edited.version = 2
+  await expect(seed(db,edited)).rejects.toThrow()
+  expect(await repo.annotations('l')).toMatchObject([{quote:'🌱',start:3,end:5}])
+  expect(await db.rows('SELECT version FROM catalog_metadata')).toEqual([{version:1}])
+})
