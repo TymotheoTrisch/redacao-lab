@@ -8,6 +8,8 @@ import { migrate, migrations, type Sql } from '../src/db/schema'
 import { seed } from '../src/db/seed'
 import { Repository } from '../src/db/repository'
 import { catalog } from '../src/catalog'
+import { buildPrivateCatalog } from '../src/privateCatalog'
+import { preloadPersonal } from '../src/db/personalPreload'
 
 function fixture(text='Há 🌱 uma ideia.', version=1) {
   return {
@@ -211,4 +213,42 @@ it('reimporta pacote privado sem duplicar módulo ou perder a nota e recusa coli
   await expect(repo.importPrivate(pack)).rejects.toThrow()
   expect(await repo.moduleNote('pr-m')).toBe('Nota privada sintética')
   expect(await db.rows('PRAGMA foreign_key_check')).toEqual([])
+})
+
+it('instala o perfil pessoal em base nova ou atualizada, preserva importações e dispensa releitura no reinício', async () => {
+  const turn = { character:'Guia sintético', message:'Uma ideia inicial.' }
+  const files = [1,2].flatMap(n => [
+    ['modulo' + n + '.json', {messages:[{id:1,type:'conversation',sequence:[turn]}]}],
+    ['modulo' + n + '_quiz.json', {moduleId:n,title:'Módulo sintético ' + n,items:[{
+      type:'quiz',questionType:'multiple-choice',question:'Qual termo indica tempo?',
+      options:[{text:'Hoje',correct:true},{text:'Aqui',correct:false}],explanation:'Hoje localiza a ação no tempo.',
+      feedbackCorrect:turn,feedbackWrong:turn,
+    }]}],
+  ] as const).map(([name,body]) => ({name,size:JSON.stringify(body).length,text:async () => JSON.stringify(body)}))
+  const pack = await buildPrivateCatalog(files)
+  const ids = pack.modules.map(m => m.id)
+  const neverLoad = async () => { throw new Error('O pacote não deveria ser carregado.') }
+  for (const upgraded of [false,true]) {
+    const {db,repo} = connect()
+    await migrate(db)
+    await seed(db,catalog)
+    await preloadPersonal(db,repo,[],neverLoad)
+    expect(await repo.privateModules()).toEqual([])
+    if (upgraded) {
+      const existing = await buildPrivateCatalog(files.slice(0,2))
+      existing.modules[0].title = 'Edição local anterior'
+      await repo.importPrivate(existing)
+      await repo.saveModuleNote(ids[0],'Nota anterior')
+      await repo.answer(existing.questions[0],0)
+    }
+    await preloadPersonal(db,repo,ids,async () => pack)
+    await preloadPersonal(db,repo,ids,neverLoad)
+    expect((await repo.privateModules()).flatMap(p => p.modules.map(m => m.id))).toEqual(ids)
+    if (upgraded) {
+      expect((await repo.privateModules())[0].modules[0].title).toBe('Edição local anterior')
+      expect(await repo.moduleNote(ids[0])).toBe('Nota anterior')
+      expect(await repo.latestAnswers()).toEqual({[pack.questions[0].id]:0})
+    }
+    expect(await db.rows('PRAGMA foreign_key_check')).toEqual([])
+  }
 })

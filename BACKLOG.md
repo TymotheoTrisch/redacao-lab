@@ -80,3 +80,11 @@ B03–B04 atualizados, com tema escuro por padrão, rolagem por módulo, estado 
 - Layout conferido a 390 px em navegador: leitura em tema escuro, seis blocos no mesmo fluxo no primeiro módulo, retorno da resposta e ausência de transbordamento horizontal.
 - [Emulador Android 15 em modo avião](https://github.com/TymotheoTrisch/redacao-lab/actions/runs/45084982147): instalação limpa, resposta com feedback, nota geral e destaque recuperados após encerramento do processo. Em instalação separada, gravou uma anotação e um reforço na 0.1.0, instalou a 0.2.0 por cima e recuperou os dados.
 - O teste físico de gesto de seleção, TalkBack e escolha dos JSONs no seletor de arquivos do telefone permanece pendente. O ADB local não listou aparelho.
+
+## Correções do leitor após a 0.2.0 · somente código
+
+A configuração anterior deixava desativado o ajuste de margens do Capacitor no Android em edge-to-edge. O teste de regressão falhou com esse valor e passou com a aplicação automática dos insets de barras e recortes. A barra do app agora fica visível também no leitor. A entrada de módulos e trechos ao rolar foi conferida no Chromium com viewport de 390 px e movimento reduzido.
+
+O formulário de anotação integrado ao texto deslocava a leitura. Os testes de modalidade falharam antes da troca por um diálogo e passaram com foco, cancelamento e preservação do rascunho. O perfil pessoal instala os módulos ausentes ao abrir o SQLite, com teste local dos 15 módulos reais. Comandos e isolamento em [Perfil pessoal](docs/perfil-pessoal.md).
+
+Lint, typecheck e 48 testes passaram. O roteiro instrumentado agora verifica a posição da WebView em relação à barra do Android e procura o editor dentro do diálogo aberto. Sua execução em Android fica para a próxima compilação solicitada. A CI executa as verificações web nos pushes e reserva a compilação Android ao acionamento manual.

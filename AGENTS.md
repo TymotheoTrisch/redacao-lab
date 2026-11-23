@@ -57,3 +57,9 @@ Crie testes automatizados para validar a importação, a integridade dos dados e
 - A seleção de um trecho apresenta cores para grifar imediatamente e uma ação de comentário junto à seleção.
 - O botão de notas gerais contém apenas um ícone, com nome acessível, no canto inferior direito. Abre um painel sobre o módulo e conserva a posição de leitura.
 - As referências pedagógicas privadas entram por importação local opcional. A distribuição inclui o catálogo autoral.
+
+### Continuação do leitor pessoal
+- Na próxima entrega solicitada para o celular do usuário, usar o perfil pessoal com os 15 módulos de referência pré-carregados. Manter o perfil distribuível público independente.
+- Considerar a barra de status e os recortes do Android no posicionamento da barra superior. Animar a entrada dos módulos e dos trechos durante a rolagem respeitando movimento reduzido.
+- Abrir o editor de notas por seleção em diálogo modal, preservando o ponto de leitura. O grifo de um toque continua direto.
+- Gerar nova versão ou APK somente quando o usuário solicitar.

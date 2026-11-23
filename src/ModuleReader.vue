@@ -2,11 +2,12 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import type { Catalog } from './catalog'
 import type { Annotation, Repository, Review } from './db'
+import { vScrollReveal } from './scrollReveal'
 import AnnotationPanel from './AnnotationPanel.vue'
 import InlineQuestion from './InlineQuestion.vue'
 type Module = Catalog['modules'][number]
 const props = defineProps<{ module:Module; questions:Catalog['questions']; repo:Repository|null; startId:string; reviews:Review[] }>()
-const emit = defineEmits<{ position:[lessonId:string,blockId:string]; back:[]; reinforce:[lessonId:string]; finish:[] }>()
+const emit = defineEmits<{ position:[lessonId:string,blockId:string]; reinforce:[lessonId:string]; finish:[] }>()
 const root = ref<HTMLElement>()
 const sheet = ref<HTMLDialogElement>()
 const fab = ref<HTMLButtonElement>()
@@ -112,12 +113,11 @@ function editFromSheet(a:Annotation) {
 </script>
 <template>
   <article ref="root" class="reader">
-    <button class="link" @click="emit('back')">← Biblioteca</button>
     <header class="chapter"><span class="meta">Módulo {{ module.order }}</span><h1>{{ module.title }}</h1></header>
     <p v-if="error && !drawerOpen" role="alert">{{ error }}</p>
     <section v-for="lesson in lessons" :key="lesson.id" class="lesson">
       <h2 v-if="lesson.title!==module.title">{{ lesson.title }}</h2>
-      <div v-for="block in lesson.blocks" :id="block.id" :key="block.id" :data-lesson="lesson.id" class="passage">
+      <div v-for="block in lesson.blocks" v-scroll-reveal :id="block.id" :key="block.id" :data-lesson="lesson.id" class="passage">
         <div :class="['prose',block.kind]"><small>{{ labels[block.kind] }}</small>
           <AnnotationPanel :ref="el=>{ if(el) editors.set(block.id,el as InstanceType<typeof AnnotationPanel>); else editors.delete(block.id) }" :lesson-id="lesson.id" :block="block" :repo="repo" :notes="notes[lesson.id] ?? []" @changed="reloadNotes(lesson.id)" />
         </div>

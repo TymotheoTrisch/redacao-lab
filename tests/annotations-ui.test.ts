@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import AnnotationPanel from '../src/AnnotationPanel.vue'
 import type { Annotation, Repository } from '../src/db'
 
@@ -9,6 +9,23 @@ const first: Annotation = { id: 'primeira', lessonId: 'tese', blockId: block.id,
   start: 3, end: 6, quote: 'Uma', color: 'blue', note: 'Rever' }
 const orphan: Annotation = { ...first, id: 'antiga', blockId: 'outro', start: null, end: null,
   quote: 'Versão anterior', note: 'Preservada' }
+
+// JSDOM ainda não executa as APIs de abertura/fechamento de dialog do navegador.
+const showModal = vi.fn(function(this:HTMLDialogElement) { this.open = true })
+const close = vi.fn(function(this:HTMLDialogElement) { this.open = false })
+const originalDialogMethods = Object.getOwnPropertyDescriptors(HTMLDialogElement.prototype)
+beforeAll(() => {
+  Object.defineProperties(HTMLDialogElement.prototype, {
+    showModal:{value:showModal,configurable:true}, close:{value:close,configurable:true},
+  })
+})
+afterAll(() => {
+  for (const key of ['showModal','close'] as const) {
+    const original = originalDialogMethods[key]
+    if (original) Object.defineProperty(HTMLDialogElement.prototype,key,original)
+    else Reflect.deleteProperty(HTMLDialogElement.prototype,key)
+  }
+})
 
 function fakeRepo() {
   return {
@@ -43,6 +60,43 @@ async function selectRange() {
 afterEach(() => { wrapper.unmount(); window.getSelection()?.removeAllRanges() })
 
 describe('anotações por trecho', () => {
+  it('abre edição com showModal, nome acessível e foco no título; Escape volta ao destaque', async () => {
+    const repo = fakeRepo()
+    await setup(repo)
+    const mark = wrapper.get<HTMLElement>('mark')
+    mark.element.focus()
+    await mark.trigger('keydown.enter')
+    await flushPromises()
+    const dialog = wrapper.get<HTMLDialogElement>('dialog[open]')
+    expect(showModal.mock.instances).toContain(dialog.element)
+    const title = document.getElementById(dialog.attributes('aria-labelledby') ?? '')
+    expect(title?.textContent).toBe('Editar anotação')
+    expect(document.activeElement).toBe(title)
+    expect(document.documentElement.style.overflow).toBe('hidden')
+    await dialog.trigger('cancel')
+    expect(wrapper.find('dialog').exists()).toBe(false)
+    expect(document.activeElement).toBe(mark.element)
+    expect(document.documentElement.style.overflow).toBe('')
+    expect(repo.editAnnotation).not.toHaveBeenCalled()
+  })
+
+  it('mantém o modal e rascunho durante a gravação e anuncia a falha dentro dele', async () => {
+    const repo = fakeRepo()
+    let fail!: (error:Error) => void
+    repo.addAnnotation.mockImplementationOnce(() => new Promise((_,reject) => { fail = reject }))
+    await setup(repo)
+    await selectRange()
+    await button('Anotar trecho').trigger('click')
+    await wrapper.get('textarea').setValue('Rascunho')
+    await wrapper.get('form').trigger('submit')
+    const dialog = wrapper.get('dialog[open]')
+    await dialog.trigger('cancel')
+    expect(wrapper.find('dialog[open]').exists()).toBe(true)
+    fail(new Error('falha'))
+    await flushPromises()
+    expect(dialog.get('[role=alert]').text()).toContain('Tente novamente')
+    expect(dialog.get('textarea').element.value).toBe('Rascunho')
+  })
   it('oferece as cores somente durante a seleção e permite grifar com um toque', async () => {
     const repo = fakeRepo()
     await setup(repo, [first, orphan])
@@ -130,6 +184,12 @@ describe('anotações por trecho', () => {
     const repo = fakeRepo()
     await setup(repo)
     await wrapper.get('mark[role=button]').trigger('keydown.enter')
+    await button('Excluir').trigger('click')
+    await flushPromises()
+    expect(document.activeElement).toBe(button('Manter anotação').element)
+    await wrapper.get('dialog').trigger('cancel')
+    expect(wrapper.find('dialog[open]').exists()).toBe(true)
+    expect(document.activeElement).toBe(button('Excluir').element)
     await button('Excluir').trigger('click')
     await button('Manter anotação').trigger('click')
     expect(repo.deleteAnnotation).not.toHaveBeenCalled()

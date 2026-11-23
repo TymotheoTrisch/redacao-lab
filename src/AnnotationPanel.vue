@@ -14,7 +14,7 @@ function notifySelection() {
 </script>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, useId, watch } from 'vue'
 import type { Annotation, Color, Repository } from './db'
 
 const props = defineProps<{
@@ -28,7 +28,11 @@ const colors: Record<Color, string> = { yellow: 'amarelo', blue: 'azul', green: 
 const paragraph = ref<HTMLElement>()
 const container = ref<HTMLElement>()
 const toolbar = ref<HTMLElement>()
+const editor = ref<HTMLDialogElement>()
+const editorTitleId = useId()
 const editorHeading = ref<HTMLElement>()
+const deleteButton = ref<HTMLButtonElement>()
+const keepButton = ref<HTMLButtonElement>()
 const returnFocus = ref<HTMLElement>()
 const localNotes = ref<Annotation[]>([])
 const selection = ref<{ start:number; end:number } | null>(null)
@@ -171,8 +175,31 @@ function openEditor(item:Draft) {
   deleting.value = false
   draft.value = item
   clearSelection()
-  void nextTick(() => editorHeading.value?.focus())
 }
+watch(editor, (dialog, _, onCleanup) => {
+  if (!dialog) return
+  const page = document.documentElement
+  const previousOverflow = page.style.overflow
+  const viewport = window.visualViewport
+  function resize() {
+    const height = viewport?.height ?? window.innerHeight
+    dialog!.style.setProperty('--editor-height',height + 'px')
+    dialog!.style.setProperty('--editor-center',((viewport?.offsetTop ?? 0) + height/2) + 'px')
+  }
+  resize()
+  dialog.showModal()
+  page.style.overflow = 'hidden'
+  editorHeading.value?.focus({preventScroll:true})
+  viewport?.addEventListener('resize',resize)
+  viewport?.addEventListener('scroll',resize)
+  window.addEventListener('resize',resize)
+  onCleanup(() => {
+    viewport?.removeEventListener('resize',resize)
+    viewport?.removeEventListener('scroll',resize)
+    window.removeEventListener('resize',resize)
+    page.style.overflow = previousOverflow
+  })
+}, {flush:'post'})
 function createDraft() {
   if (!selection.value) return
   const {start,end} = selection.value
@@ -183,12 +210,22 @@ function edit(a:Annotation) {
   openEditor({id:a.id,start:a.start ?? 0,end:a.end ?? 0,quote:a.quote,color:a.color,note:a.note})
 }
 defineExpose({edit})
-function closeEditor() {
+function closeEditor(deleted = false) {
+  if (editor.value?.open) editor.value.close()
   draft.value = null
   deleting.value = false
   error.value = ''
-  const target = returnFocus.value?.isConnected && returnFocus.value !== document.body ? returnFocus.value : paragraph.value
+  const target = !deleted && returnFocus.value?.isConnected && returnFocus.value !== document.body ? returnFocus.value : paragraph.value
   target?.focus({preventScroll:true})
+}
+function confirmDeletion(value:boolean) {
+  deleting.value = value
+  void nextTick(() => (value ? keepButton.value : deleteButton.value)?.focus({preventScroll:true}))
+}
+function dismiss() {
+  if (busy.value) return
+  if (deleting.value) confirmDeletion(false)
+  else closeEditor()
 }
 async function change(operation:(repo:Repository) => Promise<unknown>) {
   const repo = props.repo
@@ -202,7 +239,7 @@ async function change(operation:(repo:Repository) => Promise<unknown>) {
     if (lessonId === props.lessonId && repo === props.repo) {
       if (blockId === props.block.id) {
         clearSelection()
-        if (draft.value) closeEditor()
+        if (draft.value) closeEditor(deleting.value)
       }
       emit('changed')
       if (props.notes === undefined) await reload()
@@ -220,7 +257,7 @@ function highlight(color:Color) {
 }
 function save() {
   const item = draft.value
-  if (!item) return
+  if (!item || deleting.value) return
   return change(repo => item.id === null
     ? repo.addAnnotation(props.lessonId,props.block.id,item.start,item.end,item.color,item.note)
     : repo.editAnnotation(item.id,item.color,item.note))
@@ -248,23 +285,27 @@ function remove() {
       </button>
       <button type="button" :disabled="busy" @pointerdown.prevent @click="createDraft">Anotar trecho</button>
     </div>
-    <form v-if="draft" class="note-editor" @submit.prevent="save" @keydown.esc.prevent="!busy && closeEditor()">
-      <h3 ref="editorHeading" tabindex="-1">{{ draft.id ? 'Editar anotação' : 'Nova anotação' }}</h3>
+    <dialog v-if="draft" ref="editor" class="note-editor" :aria-labelledby="editorTitleId"
+      @cancel.prevent="dismiss" @close="editor && !editor.open && closeEditor()">
+    <form @submit.prevent="save">
+      <h3 :id="editorTitleId" ref="editorHeading" tabindex="-1" autofocus>{{ draft.id ? 'Editar anotação' : 'Nova anotação' }}</h3>
       <blockquote>{{ draft.quote }}</blockquote>
-      <label>Cor da marcação<select v-model="draft.color"><option v-for="(name,key) in colors" :key="key" :value="key">{{ name }}</option></select></label>
-      <label>Comentário (opcional)<textarea v-model="draft.note" maxlength="4000" rows="3" /></label>
+      <label>Cor da marcação<select v-model="draft.color" :disabled="busy || deleting"><option v-for="(name,key) in colors" :key="key" :value="key">{{ name }}</option></select></label>
+      <label>Comentário (opcional)<textarea v-model="draft.note" :disabled="busy || deleting" maxlength="4000" rows="3" /></label>
+      <p v-if="error" role="alert">{{ error }}</p>
       <div v-if="deleting" class="editor-actions">
         <p role="status">Excluir esta anotação?</p>
         <button type="button" :disabled="busy" @click="remove">Confirmar exclusão</button>
-        <button type="button" :disabled="busy" @click="deleting=false">Manter anotação</button>
+        <button ref="keepButton" type="button" :disabled="busy" @click="confirmDeletion(false)">Manter anotação</button>
       </div>
       <div v-else class="editor-actions">
         <button type="submit" :disabled="busy">Salvar anotação</button>
-        <button type="button" :disabled="busy" @click="closeEditor">Cancelar</button>
-        <button v-if="draft.id" type="button" :disabled="busy" @click="deleting=true">Excluir</button>
+        <button type="button" :disabled="busy" @click="closeEditor()">Cancelar</button>
+        <button v-if="draft.id" ref="deleteButton" type="button" :disabled="busy" @click="confirmDeletion(true)">Excluir</button>
       </div>
     </form>
-    <p v-if="error" role="alert">{{ error }}</p>
+    </dialog>
+    <p v-if="error && !draft" role="alert">{{ error }}</p>
     <p v-if="loadFailed" role="alert">Não foi possível carregar as anotações.
       <button type="button" @click="reload">Tentar novamente</button>
     </p>
@@ -284,7 +325,12 @@ mark.green, .swatch.green span { background:#ade6b8; }
 .selection-tools button { min-height:44px; border:0; padding:0 .6rem; background:transparent; color:inherit; }
 .selection-tools .swatch { display:grid; place-items:center; width:44px; padding:0; }
 .swatch span { display:block; width:23px; height:23px; border-radius:50%; border:1px solid #424838; }
-.note-editor { margin:1rem 0; padding:1rem; border:1px solid var(--line,#aab8b2); border-radius:12px; background:var(--surface,#fff); }
+.note-editor { position:fixed; inset:var(--editor-center,50%) 0 auto; transform:translateY(-50%); margin:0 auto;
+  width:min(30rem,calc(100% - 1.5rem)); max-height:calc(var(--editor-height,100vh) - 1.5rem);
+  overflow:auto; overscroll-behavior:contain; padding:1.1rem; box-sizing:border-box; border:1px solid var(--line,#aab8b2);
+  border-radius:12px; background:var(--surface,#fff); color:var(--ink,#182322); font:1rem/1.5 system-ui,sans-serif;
+  box-shadow:0 12px 48px #1114; }
+.note-editor::backdrop { background:rgb(13 23 20 / 52%); }
 .note-editor h3 { margin:0; }
 .note-editor blockquote { margin:.6rem 0; padding-inline-start:.85rem; border-inline-start:3px solid var(--accent,#48725f); overflow-wrap:anywhere; }
 .note-editor label, .note-editor select, .note-editor textarea { display:block; }

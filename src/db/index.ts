@@ -4,6 +4,8 @@ import { catalog } from '../catalog'
 import { Repository } from './repository'
 import { migrate, type Sql } from './schema'
 import { seed } from './seed'
+import { moduleIds, loadPack } from 'virtual:redacao-profile'
+import { preloadPersonal } from './personalPreload'
 
 export { Repository }
 export type { Annotation, Color, Preferences, Progress, Review } from './repository'
@@ -29,7 +31,9 @@ async function initialize() {
   }
   await migrate(db)
   await seed(db,catalog)
-  return new Repository(db)
+  const repo = new Repository(db)
+  await preloadPersonal(db, repo, moduleIds, loadPack)
+  return repo
 }
 
 export function openRepository(): Promise<Repository> {

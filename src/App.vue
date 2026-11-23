@@ -4,6 +4,7 @@ import { Capacitor } from '@capacitor/core'
 import { openRepository, type Preferences, type Progress, type Repository, type Review } from './db'
 import { searchModules, useNavigation, type Lesson } from './navigation'
 import { catalog, type Catalog } from './catalog'
+import { vScrollReveal } from './scrollReveal'
 import ModuleReader from './ModuleReader.vue'
 import ImportPanel from './ImportPanel.vue'
 const imported = shallowRef<Catalog[]>([])
@@ -109,7 +110,9 @@ function saveSettings() {
 </script>
 
 <template>
-  <header v-if="nav.screen!=='reader'" class="mast"><span class="brand">Redação <i>Lab</i></span><span>Estudo pessoal</span></header>
+  <header class="mast topbar">
+    <button v-if="nav.screen==='reader'" class="link back" @click="go('library')">← Biblioteca</button>
+    <span class="brand">Redação <i>Lab</i></span><span v-if="nav.screen!=='reader'">Estudo pessoal</span></header>
   <nav v-if="nav.screen!=='reader'" aria-label="Navegação principal">
     <button v-for="tab in (['library','review','settings'] as const)" :key="tab" :disabled="busy || (native && !repo)"
       :aria-current="(nav.screen === tab) ? 'page' : undefined" @click="go(tab)">
@@ -130,7 +133,7 @@ function saveSettings() {
         <button v-if="latest" class="resume" :disabled="busy" @click="read(latest)">Retomar leitura · {{ latest.title }} →</button>
         <label class="field">Buscar nas aulas<input v-model="nav.query" type="search" placeholder="Tema, título ou trecho"></label>
         <p v-if="!modules.length">Nenhuma aula encontrada.</p>
-        <section v-for="module in modules" :key="module.id" class="module">
+        <section v-for="module in modules" v-scroll-reveal :key="module.id" class="module">
           <h2>{{ module.title }}</h2>
           <button v-for="item in module.lessons" :key="item.id" class="row" :disabled="busy" @click="read(item)">
             <span>{{ item.title }} <small>{{ status(item.id) === 'done' ? 'Concluída' : status(item.id) === 'reading' ? 'Em leitura' : '' }}</small></span><span aria-hidden="true">→</span>
@@ -139,7 +142,7 @@ function saveSettings() {
       </template>
       <template v-else-if="nav.screen === 'reader'">
         <ModuleReader :key="activeModule.id" :module="activeModule" :start-id="block.id" :repo="repo" :reviews="reviews" :questions="questions"
-          @back="go('library')" @position="position" @finish="complete"
+          @position="position" @finish="complete"
           @reinforce="id=>updateReview(db=>db.markReview(id),'Aula marcada para reforço.')" />
       </template>
       <template v-else-if="nav.screen === 'review'">

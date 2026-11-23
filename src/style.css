@@ -69,3 +69,11 @@ input {accent-color:var(--accent)}
   .chapter,.feedback,.sheet[open] {animation:arrive .19s ease-out}
   @keyframes arrive {from {opacity:.3;transform:translateY(7px)} to {opacity:1;transform:none}}
 }
+
+.topbar {position:sticky;top:0;z-index:8;min-height:3.75rem;padding-block:.45rem;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar .back {font-weight:600}
+.passage {scroll-margin-top:4.75rem}
+@media(prefers-reduced-motion:no-preference) {
+  .scroll-enter {animation:reveal-on-scroll .28s ease-out}
+  @keyframes reveal-on-scroll {from {opacity:.7;transform:translateY(.55rem)} to {opacity:1;transform:none}}
+}
